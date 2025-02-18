@@ -12,10 +12,11 @@ export default function AllProducts() {
       setLoading(true);
       try {
         const response = await fetch("https://v2.api.noroff.dev/online-shop/");
-        const data = await response.json();
+        const apidata = await response.json();
         // API-et returnerer et objekt med en "data"-nøkkel som inneholder en array med produkter
-        const productsArray = Array.isArray(data.data) ? data.data : [];
-        setProducts(productsArray);
+        // const productsArray = Array.isArray(data.data) ? data.data : [];
+
+        setProducts(apidata.data);
       
       } catch (error) {
         console.error("Error fetching products:", error);
