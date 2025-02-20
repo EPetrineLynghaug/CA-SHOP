@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import useSingleProduct from "../hooks/useSingleProduct";
+import useSingleProduct from "../../hooks/useSingleProduct";
 
 
 export default function SingleProduct() {

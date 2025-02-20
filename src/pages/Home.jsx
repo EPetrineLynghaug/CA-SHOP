@@ -1,5 +1,5 @@
 import React from "react";
-import AllProducts from "../components/AllProducts"; // ✅ Bruker AllProducts-komponenten
+import AllProducts from "./allProducts/AllProducts"; // ✅ Bruker AllProducts-komponenten
 
 export default function Home() {
   return (

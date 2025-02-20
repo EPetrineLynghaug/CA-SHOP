@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import React from "react";
 import Home from "./pages/Home";
-import SingleProduct from "./pages/SingleProduct";
+import SingleProduct from "./pages/singleProducts/SingleProduct";
 
 function App() {
   return (

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import useProducts from "../hooks/useProducts";
-import ProductList from "./ProductList";
-import SearchBar from "./SearchBar";
+import useProducts from "../../hooks/useProducts";
+import ProductList from "../../components/ProductList";
+import SearchBar from "../../components/SearchBar";
 
 export default function AllProducts() {
   const { products, loading } = useProducts();
