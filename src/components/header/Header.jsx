@@ -8,7 +8,7 @@ export default function Header() {
 
   // Summerer antall varer i handlekurven
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-  // Antall favoritter
+
   const totalFavourites = favourites.length;
 
   // State for å åpne/lukke mobilmenyen
@@ -102,7 +102,9 @@ export default function Header() {
               </Link>
             </li>
           </ul>
+     
         </div>
+        
       )}
     </header>
   );
