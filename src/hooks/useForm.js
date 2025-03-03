@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import { useState, useRef } from "react";
 
 function useForm(initialValues) {
   const [values, setValues] = useState(initialValues);
