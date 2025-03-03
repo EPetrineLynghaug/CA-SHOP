@@ -1,17 +1,16 @@
 import { useParams } from "react-router";
-import useSingleProduct from "../../hooks/useSingleProduct";
-
+import { useProductById } from "../../hooks/productsApi";
 
 export default function SingleProduct() {
   const { id } = useParams();
-  const { product, loading, error } = useSingleProduct(id);
+  const { product, loading, error } = useProductById(id);
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading product details...</p>;
   }
 
   if (error) {
-    return <p className="text-center text-red-500 text-lg">{error}</p>;
+    return <p className="text-center text-red-500 text-lg">{error.message}</p>;
   }
 
   if (!product || Object.keys(product).length === 0) {
@@ -32,7 +31,6 @@ export default function SingleProduct() {
         <p className="text-center text-gray-500">No image available</p>
       )}
 
-      {/* Prisvisning med rabatt hvis aktuelt */}
       <div className="text-lg font-semibold mb-4 text-center">
         {product.discountedPrice < product.price ? (
           <>
@@ -44,15 +42,12 @@ export default function SingleProduct() {
         )}
       </div>
 
-      {/* Rating */}
       {product.rating && (
         <p className="text-yellow-500 text-center text-lg mb-4">⭐ Rating: {product.rating} / 5</p>
       )}
 
-      {/* Produktbeskrivelse */}
       <p className="text-gray-700 mb-6 text-center">{product.description}</p>
 
-      {/* Tags */}
       {product.tags && product.tags.length > 0 && (
         <div className="mb-6 text-center">
           <span className="font-bold text-gray-800">Tags:</span>
@@ -64,7 +59,6 @@ export default function SingleProduct() {
         </div>
       )}
 
-      {/* Anmeldelser */}
       {product.reviews && product.reviews.length > 0 && (
         <div className="mt-6">
           <h2 className="text-xl font-semibold text-center mb-4">Reviews</h2>
