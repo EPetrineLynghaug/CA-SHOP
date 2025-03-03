@@ -6,8 +6,8 @@ import useProductStore from "../../store/productStore";
 export default function SingleProduct() {
   const { id } = useParams();
   const { product, loading, error } = useProductById(id);
-  const { addToCart } = useProductStore(); // Hent funksjonen for å legge til i cart
-
+  const { addToCart } = useProductStore(); 
+  
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading product details...</p>;
   }
