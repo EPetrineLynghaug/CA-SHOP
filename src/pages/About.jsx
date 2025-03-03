@@ -1,5 +1,5 @@
 import React from "react";
-import ContactUsForm from "../components/ContactUsForm"; // juster banen etter mappestrukturen din
+import ContactUsForm from "../components/ContactUsForm"; 
 
 const About = () => {
   return (
