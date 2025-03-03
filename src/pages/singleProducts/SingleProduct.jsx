@@ -1,9 +1,12 @@
 import { useParams } from "react-router";
 import { useProductById } from "../../hooks/productsApi";
 
+import useProductStore from "../../store/productStore"; 
+
 export default function SingleProduct() {
   const { id } = useParams();
   const { product, loading, error } = useProductById(id);
+  const { addToCart } = useProductStore(); // Hent funksjonen for å legge til i cart
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading product details...</p>;
@@ -16,6 +19,12 @@ export default function SingleProduct() {
   if (!product || Object.keys(product).length === 0) {
     return <p className="text-center text-gray-500 text-lg">No product found.</p>;
   }
+
+  const handleBuyNow = () => {
+    // Legg produktet til i handlekurven
+    addToCart(product);
+    console.log("Product added to cart:", product);
+  };
 
   return (
     <div className="mx-auto max-w-2xl p-6 bg-white shadow-lg rounded-lg">
@@ -73,6 +82,16 @@ export default function SingleProduct() {
           </ul>
         </div>
       )}
+
+      {/* Kjøp-knapp */}
+      <div className="flex justify-center mt-6">
+        <button 
+          onClick={handleBuyNow}
+          className="px-6 py-3 bg-green-600 text-white rounded-md shadow hover:bg-green-700 transition"
+        >
+          Kjøp Nå
+        </button>
+      </div>
     </div>
   );
 }

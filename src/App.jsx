@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import SingleProduct from "./pages/singleProducts/SingleProduct";
 import Layout from "./components/Layout";
 import About from './pages/About';
+import Favorites from "./pages/Favorites";
+import Cart from "./pages/Cart";
 
 const App = () => {
   return (
@@ -14,6 +16,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="/products/:id" element={<SingleProduct />} /> {/* ✅ Dynamisk rute */}
+        <Route path="favorites" element={<Favorites />} />
+        <Route path="cart" element={<Cart />} />
         </Route>
       </Routes>
     </Router>
@@ -21,4 +25,7 @@ const App = () => {
 };
 
 export default App;
+
+
+
 
