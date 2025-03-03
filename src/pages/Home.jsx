@@ -1,14 +1,11 @@
-import React from "react"
-import AllProducts from "../api/AllProducts"
+import React from "react";
+import AllProducts from "./allProducts/AllProducts"; // ✅ Bruker AllProducts-komponenten
 
-
- function Home() {
-    return (
-        <div>
-            <h1>Home</h1>
-            <AllProducts />
-        </div>
-    )
+export default function Home() {
+  return (
+    <div>
+      <h1 className="text-3xl font-bold text-center my-6">Welcome to Our Store</h1>
+      <AllProducts /> {/* ✅ Inkluderer produktvisningen */}
+    </div>
+  );
 }
-
-export default Home;
