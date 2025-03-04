@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router"; 
-import { 
-  FaBars, 
-  FaTimes, 
-  FaShoppingCart, 
-  FaHeart, 
-  FaRegHeart, 
-  FaSearch 
+import { Link, useNavigate, useLocation } from "react-router";
+import {
+  FaBars,
+  FaTimes,
+  FaShoppingCart,
+  FaHeart,
+  FaRegHeart,
+  FaSearch
 } from "react-icons/fa";
 import useProductStore from "../../store/productStore";
 
@@ -60,7 +60,7 @@ export default function Header() {
               {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
             <Link to="/" className="text-xl font-bold">
-            Essenza 
+              Essenza
             </Link>
             {/* Desktop-navigasjonsmeny */}
             <ul className="hidden md:flex space-x-6 ml-6">
@@ -117,7 +117,7 @@ export default function Header() {
                 />
               )}
               {totalFavourites > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                <span className="absolute -top-2 -right-2 bg-[#4C5578] text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {totalFavourites}
                 </span>
               )}
@@ -129,7 +129,7 @@ export default function Header() {
                 className="transition-transform duration-300 ease-in-out text-gray-700 hover:scale-110"
               />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                <span className="absolute -top-2 -right-2 bg-[#4C5578] text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {totalItems}
                 </span>
               )}

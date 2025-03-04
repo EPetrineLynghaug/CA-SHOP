@@ -13,7 +13,7 @@
 //   }
   
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { useProducts } from "../hooks/productsApi";
 import ProductList from "../components/ProductList";
 

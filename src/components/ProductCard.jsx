@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router"; // Endret: Bruk react-router-dom!
+import { Link } from "react-router"; 
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import useProductStore from "../store/productStore";
 
@@ -38,7 +38,7 @@ function ProductCard({ product }) {
             </div>
           )}
           {isOnSale && (
-            <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute top-3 left-3 bg-[#4C5578] text-white text-xs font-bold px-2 py-1 rounded">
               SALE
             </div>
           )}
@@ -51,7 +51,7 @@ function ProductCard({ product }) {
         <div className="text-lg font-semibold text-gray-700">
           {isOnSale ? (
             <>
-              <span className="text-red-600">${discountedPrice}</span>
+              <span className="text-[#4C5578]">${discountedPrice}</span>
               <span className="ml-2 line-through text-gray-500">${price}</span>
             </>
           ) : (
