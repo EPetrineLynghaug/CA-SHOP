@@ -22,20 +22,23 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Sett initial søkestreng hvis den finnes i URL-en
+  // Sett initial søkestreng dersom den finnes i URL-en
   useEffect(() => {
     const q = new URLSearchParams(location.search).get("q") || "";
     setSearchQuery(q);
   }, [location.search]);
 
-  // Oppdater URL-en automatisk når søkestrengen endres
+  // Oppdater URL-en automatisk når søkestrengen endres (kun om den er annerledes)
   useEffect(() => {
-    if (searchQuery.trim() !== "") {
-      navigate(`/?q=${encodeURIComponent(searchQuery)}`, { replace: true });
-    } else {
-      navigate(`/`, { replace: true });
+    const currentQuery = new URLSearchParams(location.search).get("q") || "";
+    if (searchQuery.trim() !== currentQuery) {
+      if (searchQuery.trim() !== "") {
+        navigate(`/?q=${encodeURIComponent(searchQuery)}`, { replace: true });
+      } else {
+        navigate(`/`, { replace: true });
+      }
     }
-  }, [searchQuery, navigate]);
+  }, [searchQuery, navigate, location.search]);
 
   return (
     <>
@@ -59,7 +62,7 @@ export default function Header() {
             <Link to="/" className="text-xl font-bold">
               My Store
             </Link>
-            {/* Desktop navigasjonsmeny */}
+            {/* Desktop-navigasjonsmeny */}
             <ul className="hidden md:flex space-x-6 ml-6">
               <li>
                 <Link to="/" className="hover:text-blue-500">
@@ -84,7 +87,7 @@ export default function Header() {
             </ul>
           </div>
 
-          {/* Søkefelt med ikon til høyre */}
+          {/* Søkefelt med ikon */}
           <div className="flex-1 mx-4 relative">
             <input
               type="text"
@@ -99,7 +102,7 @@ export default function Header() {
             />
           </div>
 
-          {/* Høyre: Favoritter + handlekurv */}
+          {/* Høyre: Favoritter og handlekurv */}
           <div className="flex items-center space-x-4">
             <Link to="/favorites" className="relative">
               {totalFavourites > 0 ? (

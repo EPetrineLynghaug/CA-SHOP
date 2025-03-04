@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router"; 
+import { Link } from "react-router"; // Endret: Bruk react-router-dom!
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import useProductStore from "../store/productStore";
 
@@ -9,7 +9,7 @@ function ProductCard({ product }) {
   const [isFavLocal, setIsFavLocal] = useState(isFavourite);
 
   const toggleFavourite = (e) => {
-    e.preventDefault(); 
+    e.preventDefault(); // Hindrer at lenken trigges
     if (isFavourite) {
       removeFavourite(product.id);
       setIsFavLocal(false);
