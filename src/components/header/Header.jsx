@@ -60,7 +60,7 @@ export default function Header() {
               {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
             <Link to="/" className="text-xl font-bold">
-              My Store
+            Essenza 
             </Link>
             {/* Desktop-navigasjonsmeny */}
             <ul className="hidden md:flex space-x-6 ml-6">
