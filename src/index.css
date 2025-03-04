@@ -8,3 +8,14 @@
  
 }
 
+@keyframes heartFill {
+  0% {
+    clip-path: inset(100% 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.animate-heartFill {
+  animation: heartFill 0.5s forwards ease-in-out;
+}

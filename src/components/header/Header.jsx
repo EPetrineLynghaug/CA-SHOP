@@ -1,34 +1,177 @@
-import { Link } from 'react-router';
-import { FaShoppingCart } from "react-icons/fa";
-import useProductStore from "../../store/productStore"; // Juster banen om nødvendig
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router"; 
+import { 
+  FaBars, 
+  FaTimes, 
+  FaShoppingCart, 
+  FaHeart, 
+  FaRegHeart, 
+  FaSearch 
+} from "react-icons/fa";
+import useProductStore from "../../store/productStore";
 
-const Header = () => {
-  const { cart } = useProductStore();
-  // Beregn totalt antall varer (summerer alle quantity)
+export default function Header() {
+  const { cart, favourites } = useProductStore();
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalFavourites = favourites.length;
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Sett initial søkestreng dersom den finnes i URL-en
+  useEffect(() => {
+    const q = new URLSearchParams(location.search).get("q") || "";
+    setSearchQuery(q);
+  }, [location.search]);
+
+  // Oppdater URL-en automatisk når søkestrengen endres (kun om den er annerledes)
+  useEffect(() => {
+    const currentQuery = new URLSearchParams(location.search).get("q") || "";
+    if (searchQuery.trim() !== currentQuery) {
+      if (searchQuery.trim() !== "") {
+        navigate(`/?q=${encodeURIComponent(searchQuery)}`, { replace: true });
+      } else {
+        navigate(`/`, { replace: true });
+      }
+    }
+  }, [searchQuery, navigate, location.search]);
 
   return (
-    <header className="bg-gray-800 text-white p-4">
-      <nav className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">My Store</Link>
-        <ul className="flex items-center gap-4">
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/favorites">Favorites</Link></li>
-          <li>
+    <>
+      <header className="border-b">
+        {/* Øverste stripe */}
+        <div className="bg-neutral-200 text-center py-2 text-sm">
+          <p>Always free shipping</p>
+        </div>
+
+        {/* Hoved-navigasjon */}
+        <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            {/* Hamburger for mobil */}
+            <button
+              onClick={toggleMenu}
+              className="md:hidden focus:outline-none text-gray-700 hover:text-black transition-colors"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            </button>
+            <Link to="/" className="text-xl font-bold">
+              My Store
+            </Link>
+            {/* Desktop-navigasjonsmeny */}
+            <ul className="hidden md:flex space-x-6 ml-6">
+              <li>
+                <Link to="/" className="hover:text-blue-500">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/favorites" className="hover:text-blue-500">
+                  Favorites
+                </Link>
+              </li>
+              <li>
+                <Link to="/cart" className="hover:text-blue-500">
+                  Cart
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-blue-500">
+                  About
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Søkefelt med ikon */}
+          <div className="flex-1 mx-4 relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pr-10 border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500"
+            />
+            <FaSearch
+              size={20}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            />
+          </div>
+
+          {/* Høyre: Favoritter og handlekurv */}
+          <div className="flex items-center space-x-4">
+            <Link to="/favorites" className="relative">
+              {totalFavourites > 0 ? (
+                <FaHeart
+                  size={24}
+                  className="transition-transform duration-300 ease-in-out text-black hover:scale-110"
+                />
+              ) : (
+                <FaRegHeart
+                  size={24}
+                  className="transition-transform duration-300 ease-in-out text-gray-700 hover:scale-110"
+                />
+              )}
+              {totalFavourites > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                  {totalFavourites}
+                </span>
+              )}
+            </Link>
+
             <Link to="/cart" className="relative">
-              <FaShoppingCart size={24} />
+              <FaShoppingCart
+                size={24}
+                className="transition-transform duration-300 ease-in-out text-gray-700 hover:scale-110"
+              />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {totalItems}
                 </span>
               )}
             </Link>
-          </li>
-          <li><Link to="/about">About</Link></li>
-        </ul>
-      </nav>
-    </header>
-  );
-};
+          </div>
+        </nav>
 
-export default Header;
+        {/* Mobilmeny */}
+        {menuOpen && (
+          <div className="md:hidden bg-white shadow-md">
+            <ul className="px-4 py-2 space-y-2">
+              <li>
+                <Link to="/" className="block" onClick={toggleMenu}>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/favorites" className="block" onClick={toggleMenu}>
+                  Favorites
+                </Link>
+              </li>
+              <li>
+                <Link to="/cart" className="block" onClick={toggleMenu}>
+                  Cart
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="block" onClick={toggleMenu}>
+                  About
+                </Link>
+              </li>
+            </ul>
+          </div>
+        )}
+      </header>
+
+      {/* Banner rett under header */}
+      <div className="bg-[#D0E6D1] text-center py-4">
+        <p className="text-lg font-bold text-gray-800">
+          Now Crazy Week – Amazing Deals!
+        </p>
+      </div>
+    </>
+  );
+}
