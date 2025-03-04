@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { useLocation } from "react-router";
 import { useProducts } from "../../hooks/productsApi";
 import ProductList from "../../components/ProductList";
 
 export default function AllProducts() {
   const { products, loading, error } = useProducts();
   const [visibleCount, setVisibleCount] = useState(12);
+
+  // Hent spørringsparameteren fra URL-en (f.eks. ?q=søketerm)
+  const location = useLocation();
+  const queryParam = new URLSearchParams(location.search).get("q") || "";
 
   // Sorter slik at salgselementene kommer først
   const sortedProducts = [...products].sort((a, b) => {
@@ -15,18 +20,27 @@ export default function AllProducts() {
     return 0;
   });
 
-  const visibleProducts = sortedProducts.slice(0, visibleCount);
+  // Filtrer produktene dersom det finnes en spørringsparameter
+  const filteredProducts = queryParam
+    ? sortedProducts.filter((product) =>
+        product.title.toLowerCase().includes(queryParam.toLowerCase())
+      )
+    : sortedProducts;
+
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
 
   return (
     <div className="bg-white mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Products</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">
+        {queryParam ? `Results for "${queryParam}"` : "Products"}
+      </h1>
 
       {loading && <p className="text-center text-gray-500">Loading products...</p>}
       {error && <p className="text-center text-red-500">Error: {error.message}</p>}
 
       <ProductList products={visibleProducts} />
 
-      {visibleProducts.length < products.length && (
+      {visibleProducts.length < filteredProducts.length && (
         <div className="mt-8 flex justify-center">
           <button
             onClick={() => setVisibleCount(visibleCount + 12)}
