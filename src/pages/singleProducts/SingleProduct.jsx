@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { useProductById } from "../../hooks/productsApi";
 import useProductStore from "../../store/productStore";
 
-// Importer React-icons (eller bruk egne SVG-er):
+
 import { FaRegHeart, FaHeart, FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 function StarRating({ initialRating = 0 }) {
