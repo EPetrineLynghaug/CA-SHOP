@@ -6,7 +6,16 @@ export default function AllProducts() {
   const { products, loading, error } = useProducts();
   const [visibleCount, setVisibleCount] = useState(12);
 
-  const visibleProducts = products.slice(0, visibleCount);
+  // Sorter slik at salgselementene kommer først
+  const sortedProducts = [...products].sort((a, b) => {
+    const aOnSale = a.discountedPrice && a.discountedPrice < a.price;
+    const bOnSale = b.discountedPrice && b.discountedPrice < b.price;
+    if (aOnSale && !bOnSale) return -1;
+    if (!aOnSale && bOnSale) return 1;
+    return 0;
+  });
+
+  const visibleProducts = sortedProducts.slice(0, visibleCount);
 
   return (
     <div className="bg-white mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

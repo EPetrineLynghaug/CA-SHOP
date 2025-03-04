@@ -1,42 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router";
 import { useProductById } from "../../hooks/productsApi";
 import useProductStore from "../../store/productStore";
+import { 
+  FaRegHeart, 
+  FaHeart, 
+  FaStar, 
+  FaChevronLeft, 
+  FaChevronRight, 
+  FaChevronDown 
+} from "react-icons/fa";
 
-
-import { FaRegHeart, FaHeart, FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
-
-function StarRating({ initialRating = 0 }) {
-  const [hoverIndex, setHoverIndex] = useState(0);
-  const [rating, setRating] = useState(initialRating);
-
-  const handleClick = (index) => {
-    setRating(index);
-  };
-
+// Statisk stjernerating: viser 5 stjerner basert på "rating"-prop, ingen interaksjon
+function StarRating({ rating = 0 }) {
   return (
     <div className="flex space-x-1">
-      {[1, 2, 3, 4, 5].map((star) => {
-        const isFilled = star <= (hoverIndex || rating);
-        return (
-          <FaStar
-            key={star}
-            onMouseEnter={() => setHoverIndex(star)}
-            onMouseLeave={() => setHoverIndex(0)}
-            onClick={() => handleClick(star)}
-            className={`w-5 h-5 cursor-pointer transition ${
-              isFilled ? "text-yellow-500" : "text-gray-300"
-            }`}
-          />
-        );
-      })}
+      {[1, 2, 3, 4, 5].map((star) => (
+        <FaStar
+          key={star}
+          className={`w-5 h-5 ${
+            star <= rating ? "text-yellow-500" : "text-gray-300"
+          }`}
+        />
+      ))}
     </div>
   );
 }
 
-
 function ImageCarousel({ images = [] }) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = React.useState(0);
 
   if (!images.length) {
     return <p className="text-center text-gray-500">No image available</p>;
@@ -54,14 +46,11 @@ function ImageCarousel({ images = [] }) {
 
   return (
     <div className="relative w-full">
-      {/* Hovedbilde */}
       <img
         src={currentImage.url}
         alt={currentImage.alt || "Product image"}
         className="w-full max-h-96 object-cover"
       />
-
-      {/* Hvis flere bilder, vis piltaster */}
       {images.length > 1 && (
         <>
           <button
@@ -78,8 +67,6 @@ function ImageCarousel({ images = [] }) {
           </button>
         </>
       )}
-
-      {/* Indikator "1/2" nede til venstre */}
       {images.length > 1 && (
         <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
           {index + 1}/{images.length}
@@ -92,10 +79,8 @@ function ImageCarousel({ images = [] }) {
 export default function SingleProduct() {
   const { id } = useParams();
   const { product, loading, error } = useProductById(id);
-  const { addToCart } = useProductStore();
-
-  // Hjerte-favorisering
-  const [isFavorited, setIsFavorited] = useState(false);
+  const { addToCart, favourites, addFavourite, removeFavourite } = useProductStore();
+  const [showReviews, setShowReviews] = React.useState(false);
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading product details...</p>;
@@ -109,7 +94,7 @@ export default function SingleProduct() {
     return <p className="text-center text-gray-500 text-lg">No product found.</p>;
   }
 
-  // Sjekk om vi har flere bilder (product.images) eller bare ett (product.image)
+  // Samle bilder: Bruker product.images hvis det finnes, ellers product.image
   let imagesArray = [];
   if (Array.isArray(product.images) && product.images.length > 0) {
     imagesArray = product.images;
@@ -122,127 +107,160 @@ export default function SingleProduct() {
     console.log("Product added to cart:", product);
   };
 
+  const isFavorited = favourites.some((fav) => fav.id === product.id);
   const toggleFavorite = () => {
-    setIsFavorited((prev) => !prev);
+    if (isFavorited) {
+      removeFavourite(product.id);
+    } else {
+      addFavourite(product);
+    }
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Tilbake-knapp */}
-      <div className="max-w-2xl mx-auto px-4 py-4">
+      {/* Back-knapp */}
+      <div className="max-w-screen-xl mx-auto px-4 py-4">
         <button
           onClick={() => window.history.back()}
           className="text-gray-500 hover:text-gray-700 text-sm"
         >
-          &larr; Tilbake
+          &larr; Back
         </button>
       </div>
 
-      {/* Innholdscontainer */}
-      <div className="max-w-2xl mx-auto px-4 pb-8">
-        {/* Bilde + hjerte */}
-        <div className="relative w-full mb-4">
-          <ImageCarousel images={imagesArray} />
-
-          {/* Hjerte-ikon øverst til høyre over bildet */}
-          <div className="absolute top-2 right-2">
-            <div
-              className="bg-white p-2 rounded-full shadow-md cursor-pointer"
-              onClick={toggleFavorite}
-            >
-              {isFavorited ? (
-                <FaHeart
-                  className="w-5 h-5 text-black animate-heartFill"
-                  style={{
-                    clipPath: "inset(0 0 0 0)",
-                  }}
-                />
-              ) : (
-                // Outline-hjerte for "ikke favorisert"
-                <FaRegHeart className="w-5 h-5 text-gray-400" />
-              )}
+      <div className="max-w-screen-xl mx-auto px-4 pb-8">
+        {/* Gridoppsett: én kolonne på mobil, to kolonner på tablet og desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Venstre kolonne: Bildeslider */}
+          <div className="relative">
+            <ImageCarousel images={imagesArray} />
+            <div className="absolute top-4 right-4">
+              <div
+                className="bg-white p-2 rounded-full shadow-md cursor-pointer"
+                onClick={toggleFavorite}
+              >
+                {isFavorited ? (
+                  <FaHeart className="w-6 h-6 text-black animate-heartFill" />
+                ) : (
+                  <FaRegHeart className="w-6 h-6 text-gray-400" />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Tittel og stjerner på samme linje */}
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-gray-900">
-            {product.title || "TEKT"}
-          </h1>
+          {/* Høyre kolonne: Produktdetaljer */}
+          <div className="flex flex-col space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {product.title || "No Title"}
+              </h1>
+              <div className="mt-2">
+                <StarRating rating={product.rating || 0} />
+              </div>
+            </div>
+            
+            {/* Pris */}
+            <div>
+              <p className="text-gray-800 text-2xl font-medium">
+                {product.discountedPrice < product.price ? (
+                  <>
+                    <span className="text-green-600 font-bold">
+                      ${product.discountedPrice}
+                    </span>
+                    <span className="ml-2 line-through text-gray-500">
+                      ${product.price}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-semibold">${product.price}</span>
+                )}
+              </p>
+            </div>
 
-          {/* Viser stjerner kun hvis product.rating finnes */}
-          {product.rating && (
-            <StarRating initialRating={product.rating} />
-          )}
-        </div>
+            {/* Legg i handlekurv-knapp */}
+            <button
+              onClick={handleAddToCart}
+              className="bg-black text-white py-3 px-8 rounded-md hover:opacity-90 transition"
+            >
+              Add to Cart
+            </button>
 
-        {/* Pris */}
-        <p className="text-gray-800 text-lg font-medium mb-4">
-          {product.discountedPrice < product.price ? (
-            <>
-              <span className="text-green-600 font-bold">
-                ${product.discountedPrice}
-              </span>
-              <span className="ml-2 line-through text-gray-500">
-                ${product.price}
-              </span>
-            </>
-          ) : (
-            <span className="font-semibold">${product.price}</span>
-          )}
-        </p>
+            {/* Tags */}
+            {product.tags && product.tags.length > 0 && (
+              <div>
+                <h2 className="uppercase text-sm font-semibold text-gray-700 mb-2">
+                  Tags
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {product.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-200 text-gray-800 rounded-full px-3 py-1 text-xs font-semibold"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
-        {/* Kjøpsknapp */}
-        <button
-          onClick={handleAddToCart}
-          className="bg-black text-white py-2 px-6 rounded-md hover:opacity-90 transition mb-6"
-        >
-          Legg i handlevogn
-        </button>
+            {/* Produktbeskrivelse */}
+            <div className="border-t border-gray-200 pt-4">
+              <h2 className="uppercase text-sm font-semibold text-gray-700 mb-2">
+                Product Description
+              </h2>
+              <p className="text-gray-700 leading-relaxed">
+                {product.description || "No description available."}
+              </p>
+            </div>
 
-        {/* Produktbeskrivelse */}
-        <div className="border-t border-gray-200 pt-4 mb-6">
-          <h2 className="uppercase text-sm font-semibold text-gray-700 mb-2">
-            PRODUKT beskrivelse
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            {product.description || "Ingen beskrivelse tilgjengelig."}
-          </p>
-        </div>
-
-        {/* Anmeldelser */}
-        {product.reviews && product.reviews.length > 0 && (
-          <div className="border-t border-gray-200 pt-4">
-            <h2 className="uppercase text-sm font-semibold text-gray-700 mb-4">
-              ANMELDELSER
-            </h2>
-            <ul className="space-y-4">
-              {product.reviews.map((review) => (
-                <li
-                  key={review.id}
-                  className="border-b border-gray-200 pb-4"
+            {/* Reviews med tydelig toggle og forbedret layout */}
+            {product.reviews && product.reviews.length > 0 && (
+              <div className="border-t border-gray-200 pt-4">
+                <div
+                  className="flex items-center justify-between cursor-pointer"
+                  onClick={() => setShowReviews(!showReviews)}
                 >
-                  {/* Hvis review.rating finnes, vis stjerner */}
-                  {typeof review.rating === "number" && (
-                    <div className="flex items-center mb-1">
-                      <StarRating initialRating={review.rating} />
-                      <span className="ml-2 text-sm text-gray-600">
-                        {review.rating}/5
-                      </span>
-                    </div>
-                  )}
-                  <p className="text-sm text-gray-800 font-semibold">
-                    {review.username}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {review.description}
-                  </p>
-                </li>
-              ))}
-            </ul>
+                  <h2 className="uppercase text-sm font-semibold text-gray-700 mb-4">
+                    Reviews
+                  </h2>
+                  <div className="flex items-center space-x-1 text-blue-500">
+                    <span className="text-sm">
+                      {showReviews ? "Hide Reviews" : "Show Reviews"}
+                    </span>
+                    <FaChevronDown
+                      className={`transition-transform duration-300 ${
+                        showReviews ? "transform rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </div>
+                {showReviews && (
+                  <ul className="space-y-4">
+                    {product.reviews.map((review) => (
+                      <li key={review.id} className="border-b border-gray-200 pb-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <StarRating rating={review.rating} />
+                            <span className="ml-2 text-sm text-gray-600">
+                              {review.rating}/5
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-800 font-semibold">
+                            {review.username}
+                          </p>
+                        </div>
+                        <p className="mt-2 text-sm text-gray-600">
+                          {review.description}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
