@@ -4,17 +4,17 @@ import { persist } from "zustand/middleware";
 const useProductStore = create(
   persist(
     (set, get) => ({
-      // Produkter hentet fra API (du setter disse med setProducts)
+      // Products fetched from API
       products: [],
-      // Favoritter: lagrer hele produktobjektet
+      // Favourites: stores entire product objects
       favourites: [],
-      // Cart: lagrer produkter med et tilhørende quantity
+      // Cart: stores products with an associated quantity
       cart: [],
 
-      // Sett produktene (f.eks. etter et API-kall)
+      // Set products (e.g., after an API call)
       setProducts: (products) => set({ products }),
 
-      // Favoritter
+      // Favourites
       addFavourite: (product) =>
         set((state) => ({
           favourites: state.favourites.find((p) => p.id === product.id)
@@ -25,13 +25,21 @@ const useProductStore = create(
         set((state) => ({
           favourites: state.favourites.filter((p) => p.id !== productId),
         })),
+      // Clear all favourites
+      clearFavourites: () => set({ favourites: [] }),
 
-      // Cart-funksjonalitet
+      // Cart functionality
       addToCart: (product) =>
         set((state) => {
+          // Remove product from favourites if it exists there
+          const updatedFavourites = state.favourites.filter(
+            (p) => p.id !== product.id
+          );
+          // Check if product is already in the cart
           const existingItem = state.cart.find((item) => item.id === product.id);
           if (existingItem) {
             return {
+              favourites: updatedFavourites,
               cart: state.cart.map((item) =>
                 item.id === product.id
                   ? { ...item, quantity: item.quantity + 1 }
@@ -39,7 +47,18 @@ const useProductStore = create(
               ),
             };
           } else {
-            return { cart: [...state.cart, { ...product, quantity: 1 }] };
+            return {
+              favourites: updatedFavourites,
+              cart: [
+                ...state.cart,
+                {
+                  ...product,
+                  quantity: 1,
+                 
+                  imageUrl: product.imageUrl || product.image || "https://via.placeholder.com/150",
+                },
+              ],
+            };
           }
         }),
       removeFromCart: (productId) =>
@@ -54,7 +73,7 @@ const useProductStore = create(
         })),
       clearCart: () => set({ cart: [] }),
 
-      // Funksjon for å beregne totalpris for handlekurven
+      // Function to calculate total price of the cart
       getCartTotal: () => {
         const cart = get().cart;
         return cart.reduce(
@@ -64,7 +83,7 @@ const useProductStore = create(
       },
     }),
     {
-      name: "product-store", // lagres f.eks. i localStorage med denne nøkkelen
+      name: "product-store", 
     }
   )
 );
