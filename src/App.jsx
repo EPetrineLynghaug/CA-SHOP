@@ -3,10 +3,10 @@ import React from "react";
 import Home from "./pages/Home";
 import SingleProduct from "./pages/singleProducts/SingleProduct";
 import Layout from "./components/Layout";
-import About from './pages/About';
+import Contact from './pages/Contact';
 import Favorites from "./pages/Favorites";
-import Checkout from "./pages/Checkout";
-import Cart from "./pages/Cart";
+import Checkout from "./pages/cart/Checkout";
+import Cart from "./pages/cart/Cart";
 
 const App = () => {
   return (
@@ -15,7 +15,7 @@ const App = () => {
         {/* All routes are wrapped in the Layout component */}
         <Route path="/" element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
         <Route path="/products/:id" element={<SingleProduct />} /> {/* ✅ Dynamisk rute */}
         <Route path="favorites" element={<Favorites />} />
         <Route path="cart" element={<Cart />} />

@@ -1,17 +1,15 @@
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import useForm from "../hooks/useForm"; 
-import useProductStore from "../store/productStore"; 
+import useForm from "../../hooks/useForm";
+import useProductStore from "../../store/productStore";
 
-const Checkout = () => {
+export default function Checkout() {
   const { clearCart } = useProductStore();
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
 
   const initialValues = { name: "", address: "", payment: "" };
-  const { values, errors, handleChange, handleSubmit, resetForm } = useForm(initialValues);
+  const { values, errors, handleChange, handleSubmit } = useForm(initialValues);
 
   const onSubmit = () => {
     clearCart();
@@ -20,7 +18,7 @@ const Checkout = () => {
 
   if (submitted) {
     return (
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4 text-center">
         <h1 className="text-2xl font-bold mb-4">Thank you for your order!</h1>
         <p>Your order has been successfully submitted.</p>
         <button
@@ -36,11 +34,12 @@ const Checkout = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
-      <form onSubmit={(e) => handleSubmit(e, onSubmit)} className="max-w-lg mx-auto">
-        <div className="mb-4">
-          <label htmlFor="name" className="block font-bold mb-2">
-            Name:
-          </label>
+      <form
+        onSubmit={(e) => handleSubmit(e, onSubmit)}
+        className="max-w-lg mx-auto space-y-4"
+      >
+        <div>
+          <label htmlFor="name" className="block font-bold mb-2">Name:</label>
           <input
             type="text"
             name="name"
@@ -52,10 +51,8 @@ const Checkout = () => {
           {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="address" className="block font-bold mb-2">
-            Address:
-          </label>
+        <div>
+          <label htmlFor="address" className="block font-bold mb-2">Address:</label>
           <input
             type="text"
             name="address"
@@ -67,10 +64,8 @@ const Checkout = () => {
           {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="payment" className="block font-bold mb-2">
-            Payment Method:
-          </label>
+        <div>
+          <label htmlFor="payment" className="block font-bold mb-2">Payment Method:</label>
           <select
             name="payment"
             id="payment"
@@ -93,6 +88,4 @@ const Checkout = () => {
       </form>
     </div>
   );
-};
-
-export default Checkout;
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router";
-import ProductList from "../components/ProductList";
+import ProductList from "../components/product/ProductList";
 import useProductStore from "../store/productStore";
 
 export default function Favorites() {

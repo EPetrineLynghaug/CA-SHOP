@@ -1,14 +1,16 @@
 import React from "react";
-import ContactUsForm from "../components/ContactUsForm";
+import ContactUsForm from "../components/forms/ContactUsForm";
 
-const About = () => {
+
+
+const Contact = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="md:flex">
             {/* Venstre kolonne – Informasjonstekst */}
-            <div className="md:w-1/2 p-8 bg-blue-50">
+            <div className="md:w-1/2 p-8 bg-[#D0E6D1]">
               <h2 className="text-3xl font-extrabold text-gray-900 mb-4 text-left">
                 Get in Touch
               </h2>
@@ -29,4 +31,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Contact;
