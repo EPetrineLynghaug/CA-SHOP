@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router"; 
+import { Link, useNavigate, useLocation } from "react-router";
 import {
   FaBars,
   FaTimes,
@@ -22,16 +22,17 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isHomePage = location.pathname === "/";
+
   // Sett initial søkestreng dersom den finnes i URL-en
   useEffect(() => {
     const q = new URLSearchParams(location.search).get("q") || "";
     setSearchQuery(q);
   }, [location.search]);
 
-  // Kun oppdater URL-en når vi er på startsiden (unngå interferens på andre sider)
+  // Oppdater URL kun på startsiden
   useEffect(() => {
-    if (location.pathname !== "/") return; // Kun oppdater home-siden
-
+    if (!isHomePage) return;
     const currentQuery = new URLSearchParams(location.search).get("q") || "";
     if (searchQuery.trim() !== currentQuery) {
       const newUrl = searchQuery.trim()
@@ -39,15 +40,17 @@ export default function Header() {
         : "/";
       navigate(newUrl, { replace: true });
     }
-  }, [searchQuery, navigate, location.pathname]);
+  }, [searchQuery, navigate, isHomePage, location.search]);
 
   return (
     <>
       <header className="border-b">
         {/* Øverste stripe */}
+        {isHomePage && (
         <div className="bg-neutral-200 text-center py-2 text-sm">
           <p>Always free shipping</p>
         </div>
+          )}
 
         {/* Hoved-navigasjon */}
         <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -167,12 +170,14 @@ export default function Header() {
         )}
       </header>
 
-      {/* Banner rett under header */}
-      <div className="bg-[#D0E6D1] text-center py-4">
-        <p className="text-lg font-bold text-gray-800">
-          Now Crazy Week – Amazing Deals!
-        </p>
-      </div>
+      {/* Banner under header – vises bare på home-siden */}
+      {isHomePage && (
+        <div className="bg-[#D0E6D1] text-center py-4">
+          <p className="text-lg font-bold text-gray-800">
+            Now Crazy Week – Amazing Deals!
+          </p>
+        </div>
+      )}
     </>
   );
 }
