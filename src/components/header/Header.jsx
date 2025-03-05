@@ -84,8 +84,8 @@ export default function Header() {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-blue-500">
-                  About
+                <Link to="/contact" className="hover:text-blue-500">
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -161,8 +161,8 @@ export default function Header() {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="block" onClick={toggleMenu}>
-                  About
+                <Link to="/contact" className="block" onClick={toggleMenu}>
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -174,7 +174,7 @@ export default function Header() {
       {isHomePage && (
         <div className="bg-[#D0E6D1] text-center py-4">
           <p className="text-lg font-bold text-gray-800">
-            Now Crazy Week – Amazing Deals!
+            Now Crazy Week - Amazing Deals!
           </p>
         </div>
       )}

@@ -3,7 +3,7 @@ import ContactUsForm from "../components/forms/ContactUsForm";
 
 
 
-const About = () => {
+const Contact = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -31,4 +31,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Contact;
