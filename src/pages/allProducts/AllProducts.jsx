@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router";
 import { useProducts } from "../../hooks/productsApi";
-import ProductList from "../../components/ProductList";
+import ProductList from "../../components/product/ProductList";
 
 export default function AllProducts() {
   const { products, loading, error } = useProducts();

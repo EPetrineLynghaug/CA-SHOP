@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router"; 
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import useProductStore from "../store/productStore";
+import useProductStore from "../../store/productStore";
+
 
 function ProductCard({ product }) {
   const { favourites, addFavourite, removeFavourite } = useProductStore();

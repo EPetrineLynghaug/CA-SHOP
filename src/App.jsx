@@ -5,8 +5,8 @@ import SingleProduct from "./pages/singleProducts/SingleProduct";
 import Layout from "./components/Layout";
 import About from './pages/About';
 import Favorites from "./pages/Favorites";
-import Checkout from "./pages/Checkout";
-import Cart from "./pages/Cart";
+import Checkout from "./pages/cart/Checkout";
+import Cart from "./pages/cart/Cart";
 
 const App = () => {
   return (
