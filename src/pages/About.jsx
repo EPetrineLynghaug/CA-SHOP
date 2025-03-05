@@ -10,7 +10,7 @@ const About = () => {
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="md:flex">
             {/* Venstre kolonne – Informasjonstekst */}
-            <div className="md:w-1/2 p-8 bg-blue-50">
+            <div className="md:w-1/2 p-8 bg-[#D0E6D1]">
               <h2 className="text-3xl font-extrabold text-gray-900 mb-4 text-left">
                 Get in Touch
               </h2>
