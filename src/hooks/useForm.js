@@ -6,29 +6,51 @@ function useForm(initialValues) {
   const initialValuesRef = useRef(initialValues);
 
   const validateField = (name, value) => {
-    let error = "";
-    if (!value.trim()) {
-      error = `${name} is required`;
-    }
+    if (!value.trim()) return `${name} is required`;
 
-    // E-postvalidering: Tillater vanlige spesialtegn i den lokale delen
-    if (name === "email" && value) {
-      const emailRegex =
-        /^[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)*\.[A-Z]{2,}$/i;
-      if (!emailRegex.test(value)) {
-        error = "Invalid email address";
+    switch (name) {
+      case "email": {
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        if (!emailRegex.test(value)) return "Invalid email address";
+        break;
       }
-    }
-
-    // Navn-validering: Må inneholde minst én bokstav
-    if (name === "name" && value) {
-      const letterRegex = /[A-Za-zæøåÆØÅ]/;
-      if (!letterRegex.test(value)) {
-        error = "Name must contain at least one letter";
+      case "name": {
+        const letterRegex = /[A-Za-zæøåÆØÅ]/;
+        if (!letterRegex.test(value))
+          return "Name must contain at least one letter";
+        break;
       }
+      case "fullName": {
+        // Krever minst to ord med bokstaver (fornavn og etternavn)
+        const fullNameRegex = /^[A-Za-zæøåÆØÅ]+(?:\s+[A-Za-zæøåÆØÅ]+)+$/;
+        if (!fullNameRegex.test(value))
+          return "Full Name must include at least first and last name (letters only)";
+        break;
+      }
+      case "address": {
+        if (value.trim().length < 5) return "Address seems too short";
+        break;
+      }
+      case "zipCode": {
+        const zipRegex = /^\d{3,10}$/;
+        if (!zipRegex.test(value)) return "Invalid ZIP Code";
+        break;
+      }
+      case "city": {
+        const cityRegex = /^[A-Za-zæøåÆØÅ\s]+$/;
+        if (!cityRegex.test(value))
+          return "City must contain only letters and spaces";
+        break;
+      }
+      case "phoneNumber": {
+        const phoneRegex = /^[0-9+\s\-()]+$/;
+        if (!phoneRegex.test(value)) return "Invalid phone number";
+        break;
+      }
+      default:
+        break;
     }
-
-    return error;
+    return "";
   };
 
   const handleChange = (e) => {
@@ -45,7 +67,6 @@ function useForm(initialValues) {
       validationErrors[field] = validateField(field, values[field]);
     }
     setErrors(validationErrors);
-
     const hasErrors = Object.values(validationErrors).some((error) => error);
     if (!hasErrors) {
       callback();
