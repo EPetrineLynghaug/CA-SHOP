@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import { Link } from "react-router";
 import useProductStore from "../store/productStore";
 import { useProducts } from "../hooks/productsApi";
+import useForm from "../hooks/useForm";
 
 export default function Cart() {
   // Hent produktdata via useProducts-hook
   const { products, loading, error } = useProducts();
 
   // Hent cart- og favorittfunksjonalitet fra produktstore
-  const { 
-    cart, 
-    getCartTotal, 
-    removeFromCart, 
-    updateCartQuantity, 
+  const {
+    cart,
+    getCartTotal,
+    removeFromCart,
+    updateCartQuantity,
     clearCart,
     addToCart,
-    favourites
+    favourites,
   } = useProductStore();
 
   const [showReceipt, setShowReceipt] = useState(false);
@@ -27,9 +28,27 @@ export default function Cart() {
   const vatAmount = subTotal * vatRate;
   const totalWithVAT = subTotal + vatAmount;
 
-  // Håndter innsending: lagre total, tøm cart og vis kvittering
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Oppsett for leveringsskjema med useForm-hook
+  const initialDeliveryValues = {
+    fullName: "",
+    address: "",
+    zipCode: "",
+    city: "",
+    phoneNumber: "",
+    email: "",
+  };
+
+  const {
+    values: deliveryValues,
+    errors: deliveryErrors,
+    handleChange: handleDeliveryChange,
+    handleSubmit: handleDeliverySubmit,
+    resetForm: resetDeliveryForm,
+  } = useForm(initialDeliveryValues);
+
+  // Callback for innsending av leveringsskjema
+  const onDeliverySubmit = () => {
+    // Ved vellykket validering behandles ordren:
     setOrderTotal(totalWithVAT);
     clearCart();
     setShowReceipt(true);
@@ -56,7 +75,8 @@ export default function Cart() {
         <h1 className="text-3xl font-bold mb-4">Order Confirmed</h1>
         <p className="mb-4 text-lg">Thank you for your purchase!</p>
         <p className="mb-8 text-lg">
-          Your order total was <span className="font-semibold">${orderTotal.toFixed(2)}</span>.
+          Your order total was{" "}
+          <span className="font-semibold">${orderTotal.toFixed(2)}</span>.
         </p>
         <Link to="/">
           <button className="px-6 py-3 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 transition">
@@ -132,7 +152,9 @@ export default function Cart() {
                           />
                           <button
                             type="button"
-                            onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateCartQuantity(item.id, item.quantity + 1)
+                            }
                             className="px-3 py-1 text-gray-700"
                           >
                             +
@@ -173,62 +195,113 @@ export default function Cart() {
             </div>
             <div className="bg-white shadow rounded-lg p-6">
               <h2 className="text-xl font-semibold mb-4">Enter Delivery Information</h2>
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              <form
+                className="space-y-4"
+                onSubmit={(e) => handleDeliverySubmit(e, onDeliverySubmit)}
+              >
                 <div>
-                  <label className="block mb-1 font-medium">Full Name</label>
+                  <label className="block mb-1 font-medium text-gray-700">
+                    Full Name
+                  </label>
                   <input
                     type="text"
-                    className="w-full p-2 border rounded"
+                    name="fullName"
+                    value={deliveryValues.fullName}
+                    onChange={handleDeliveryChange}
                     placeholder="First and last name"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     required
                   />
+                  {deliveryErrors.fullName && (
+                    <p className="text-red-500 text-sm mt-1">{deliveryErrors.fullName}</p>
+                  )}
                 </div>
                 <div>
-                  <label className="block mb-1 font-medium">Address</label>
+                  <label className="block mb-1 font-medium text-gray-700">
+                    Address
+                  </label>
                   <input
                     type="text"
-                    className="w-full p-2 border rounded"
+                    name="address"
+                    value={deliveryValues.address}
+                    onChange={handleDeliveryChange}
                     placeholder="Street address and house number"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     required
                   />
+                  {deliveryErrors.address && (
+                    <p className="text-red-500 text-sm mt-1">{deliveryErrors.address}</p>
+                  )}
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block mb-1 font-medium">ZIP Code</label>
+                    <label className="block mb-1 font-medium text-gray-700">
+                      ZIP Code
+                    </label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded"
+                      name="zipCode"
+                      value={deliveryValues.zipCode}
+                      onChange={handleDeliveryChange}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                       required
                     />
+                    {deliveryErrors.zipCode && (
+                      <p className="text-red-500 text-sm mt-1">{deliveryErrors.zipCode}</p>
+                    )}
                   </div>
                   <div className="flex-1">
-                    <label className="block mb-1 font-medium">City</label>
+                    <label className="block mb-1 font-medium text-gray-700">
+                      City
+                    </label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded"
+                      name="city"
+                      value={deliveryValues.city}
+                      onChange={handleDeliveryChange}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                       required
                     />
+                    {deliveryErrors.city && (
+                      <p className="text-red-500 text-sm mt-1">{deliveryErrors.city}</p>
+                    )}
                   </div>
                 </div>
                 <div>
-                  <label className="block mb-1 font-medium">Phone Number</label>
+                  <label className="block mb-1 font-medium text-gray-700">
+                    Phone Number
+                  </label>
                   <input
                     type="tel"
-                    className="w-full p-2 border rounded"
+                    name="phoneNumber"
+                    value={deliveryValues.phoneNumber}
+                    onChange={handleDeliveryChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     required
                   />
+                  {deliveryErrors.phoneNumber && (
+                    <p className="text-red-500 text-sm mt-1">{deliveryErrors.phoneNumber}</p>
+                  )}
                 </div>
                 <div>
-                  <label className="block mb-1 font-medium">Email</label>
+                  <label className="block mb-1 font-medium text-gray-700">
+                    Email
+                  </label>
                   <input
                     type="email"
-                    className="w-full p-2 border rounded"
+                    name="email"
+                    value={deliveryValues.email}
+                    onChange={handleDeliveryChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     required
                   />
+                  {deliveryErrors.email && (
+                    <p className="text-red-500 text-sm mt-1">{deliveryErrors.email}</p>
+                  )}
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-green-600 text-white rounded-md shadow hover:bg-green-700 transition"
+                  className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-md shadow transition duration-200"
                 >
                   Confirm Order
                 </button>
