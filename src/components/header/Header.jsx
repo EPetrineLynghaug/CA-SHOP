@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router"; 
 import {
   FaBars,
   FaTimes,
   FaShoppingCart,
   FaHeart,
   FaRegHeart,
-  FaSearch
+  FaSearch,
 } from "react-icons/fa";
 import useProductStore from "../../store/productStore";
 
@@ -28,17 +28,18 @@ export default function Header() {
     setSearchQuery(q);
   }, [location.search]);
 
-  // Oppdater URL-en automatisk når søkestrengen endres (kun om den er annerledes)
+  // Kun oppdater URL-en når vi er på startsiden (unngå interferens på andre sider)
   useEffect(() => {
+    if (location.pathname !== "/") return; // Kun oppdater home-siden
+
     const currentQuery = new URLSearchParams(location.search).get("q") || "";
     if (searchQuery.trim() !== currentQuery) {
-      if (searchQuery.trim() !== "") {
-        navigate(`/?q=${encodeURIComponent(searchQuery)}`, { replace: true });
-      } else {
-        navigate(`/`, { replace: true });
-      }
+      const newUrl = searchQuery.trim()
+        ? `/?q=${encodeURIComponent(searchQuery)}`
+        : "/";
+      navigate(newUrl, { replace: true });
     }
-  }, [searchQuery, navigate, location.search]);
+  }, [searchQuery, navigate, location.pathname]);
 
   return (
     <>

@@ -1,22 +1,28 @@
 import React from "react";
 import useForm from "../hooks/useForm";
 
-export default function ContactUsForm() {
+export default function ContactUsForm({ hideHeader = false }) {
   const initialValues = { name: "", email: "", message: "" };
   const { values, errors, handleChange, handleSubmit, resetForm } = useForm(initialValues);
 
   const submitForm = () => {
-    // Her kan du f.eks. sende data til en server
     console.log("Form submitted with values:", values);
     alert("Thank you for contacting us!");
     resetForm();
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, submitForm)} className="max-w-lg mx-auto p-4">
+    <form
+      onSubmit={(e) => handleSubmit(e, submitForm)}
+      className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg"
+    >
+      {!hideHeader && (
+        <h2 className="text-2xl font-bold text-center mb-6">Contact Us</h2>
+      )}
+
       <div className="mb-4">
-        <label htmlFor="name" className="block font-bold mb-2">
-          Name:
+        <label htmlFor="name" className="block text-gray-700 font-semibold mb-2">
+          Name
         </label>
         <input
           type="text"
@@ -24,14 +30,15 @@ export default function ContactUsForm() {
           id="name"
           value={values.name}
           onChange={handleChange}
-          className="w-full border p-2"
+          placeholder="Enter your name"
+          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
         />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
       </div>
 
       <div className="mb-4">
-        <label htmlFor="email" className="block font-bold mb-2">
-          Email:
+        <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
+          Email
         </label>
         <input
           type="email"
@@ -39,27 +46,32 @@ export default function ContactUsForm() {
           id="email"
           value={values.email}
           onChange={handleChange}
-          className="w-full border p-2"
+          placeholder="Enter your email"
+          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
         />
-        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="message" className="block font-bold mb-2">
-          Message:
+      <div className="mb-6">
+        <label htmlFor="message" className="block text-gray-700 font-semibold mb-2">
+          Message
         </label>
         <textarea
           name="message"
           id="message"
           value={values.message}
           onChange={handleChange}
-          className="w-full border p-2"
+          placeholder="Enter your message"
           rows="5"
+          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
         />
-        {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
+        {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
       </div>
 
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+      <button
+        type="submit"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200"
+      >
         Send
       </button>
     </form>
