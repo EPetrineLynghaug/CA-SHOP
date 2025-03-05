@@ -1,5 +1,7 @@
 import React from "react";
 
+
+
 export default function CartItems({ cart, products, updateCartQuantity, removeFromCart }) {
   return (
     <div className="bg-white shadow rounded-lg p-6">
@@ -59,3 +61,4 @@ export default function CartItems({ cart, products, updateCartQuantity, removeFr
     </div>
   );
 }
+

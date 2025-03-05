@@ -6,6 +6,8 @@ import CartItems from "../../components/cart/CartItems";
 import OrderSummary from "../../components/cart/OrderSummary";
 import DeliveryForm from "../../components/forms/DeliveryForm";
 
+
+
 export default function Cart() {
   const { products, loading, error } = useProducts();
   const {
@@ -26,7 +28,7 @@ export default function Cart() {
   const vatAmount = subTotal * vatRate;
   const totalWithVAT = subTotal + vatAmount;
 
-  const handleDeliverySubmit = () => {
+  const onDeliverySubmit = () => {
     setOrderTotal(totalWithVAT);
     clearCart();
     setShowReceipt(true);
@@ -36,21 +38,23 @@ export default function Cart() {
     (fav) => !cart.some((item) => item.id === fav.id)
   );
 
-  if (loading) return <p className="text-center py-8">Loading products...</p>;
-  if (error)
+  if (loading) {
+    return <p className="text-center py-8">Loading products...</p>;
+  }
+  if (error) {
     return (
       <p className="text-center py-8 text-red-500">
         Error: {error.message}
       </p>
     );
-  if (showReceipt)
+  }
+  if (showReceipt) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8 text-center">
         <h1 className="text-3xl font-bold mb-4">Order Confirmed</h1>
         <p className="mb-4 text-lg">Thank you for your purchase!</p>
         <p className="mb-8 text-lg">
-          Your order total was{" "}
-          <span className="font-semibold">${orderTotal.toFixed(2)}</span>.
+          Your order total was <span className="font-semibold">${orderTotal.toFixed(2)}</span>.
         </p>
         <Link to="/">
           <button className="px-6 py-3 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 transition">
@@ -59,6 +63,7 @@ export default function Cart() {
         </Link>
       </div>
     );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -77,12 +82,8 @@ export default function Cart() {
             />
           </div>
           <div className="md:w-1/3 space-y-6">
-            <OrderSummary
-              subTotal={subTotal}
-              vatAmount={vatAmount}
-              totalWithVAT={totalWithVAT}
-            />
-            <DeliveryForm onSubmit={handleDeliverySubmit} />
+            <OrderSummary subTotal={subTotal} vatAmount={vatAmount} totalWithVAT={totalWithVAT} />
+            <DeliveryForm onSubmit={onDeliverySubmit} />
           </div>
         </div>
       ) : (
@@ -93,8 +94,16 @@ export default function Cart() {
           <h2 className="text-2xl font-bold mb-6 text-center">Add more of your favorites</h2>
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
             {additionalFavorites.map((fav) => {
-              const favImageSrc =
-                fav.image?.url || fav.images?.[0]?.url || "https://via.placeholder.com/100";
+              let favImageSrc = "https://via.placeholder.com/100";
+              if (fav.image && fav.image.url) {
+                favImageSrc = fav.image.url;
+              } else if (
+                Array.isArray(fav.images) &&
+                fav.images.length > 0 &&
+                fav.images[0].url
+              ) {
+                favImageSrc = fav.images[0].url;
+              }
               return (
                 <li
                   key={fav.id}
@@ -103,7 +112,7 @@ export default function Cart() {
                   <img
                     src={favImageSrc}
                     alt={fav.title}
-                    className="w-24 h-24 object-cover rounded-full mb-3"  // Border fjernet
+                    className="w-24 h-24 object-cover rounded-full mb-3 border"
                   />
                   <p className="font-medium mb-1">{fav.title}</p>
                   <p className="text-gray-600 mb-3">${fav.price}</p>
@@ -122,3 +131,5 @@ export default function Cart() {
     </div>
   );
 }
+
+

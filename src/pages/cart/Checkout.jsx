@@ -3,6 +3,8 @@ import { useNavigate } from "react-router";
 import useForm from "../../hooks/useForm";
 import useProductStore from "../../store/productStore";
 
+
+
 export default function Checkout() {
   const { clearCart } = useProductStore();
   const navigate = useNavigate();
