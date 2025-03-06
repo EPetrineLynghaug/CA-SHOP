@@ -7,11 +7,11 @@ export default function AllProducts() {
   const { products, loading, error } = useProducts();
   const [visibleCount, setVisibleCount] = useState(12);
 
-  // Get the query parameter from the URL 
+  // Henter spørringsparameteren fra URL-en 
   const location = useLocation();
   const queryParam = new URLSearchParams(location.search).get("q") || "";
 
-  // Sort so that on-sale products appear first
+  // Sorter slik at salgselementene kommer først
   const sortedProducts = [...products].sort((a, b) => {
     const aOnSale = a.discountedPrice && a.discountedPrice < a.price;
     const bOnSale = b.discountedPrice && b.discountedPrice < b.price;
@@ -20,7 +20,7 @@ export default function AllProducts() {
     return 0;
   });
 
-  // Filter products if a query parameter is present
+  // Filtrer produktene dersom det finnes en spørringsparameter
   const filteredProducts = queryParam
     ? sortedProducts.filter((product) =>
         product.title.toLowerCase().includes(queryParam.toLowerCase())
@@ -30,7 +30,8 @@ export default function AllProducts() {
   const visibleProducts = filteredProducts.slice(0, visibleCount);
 
   return (
-    <div className="bg-white mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+   
+      <div className="bg-white mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-left mb-8">
         {queryParam ? `Results for "${queryParam}"` : "Explore Our Collection"}
       </h1>
