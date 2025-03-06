@@ -6,8 +6,6 @@ import {
   FaRegHeart, 
   FaHeart, 
   FaStar, 
-  FaChevronLeft, 
-  FaChevronRight, 
   FaChevronDown 
 } from "react-icons/fa";
 
@@ -23,55 +21,6 @@ function StarRating({ rating = 0 }) {
           }`}
         />
       ))}
-    </div>
-  );
-}
-
-function ImageCarousel({ images = [] }) {
-  const [index, setIndex] = React.useState(0);
-
-  if (!images.length) {
-    return <p className="text-center text-gray-500">No image available</p>;
-  }
-
-  const currentImage = images[index];
-
-  const handlePrev = () => {
-    setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  return (
-    <div className="relative w-full">
-      <img
-        src={currentImage.url}
-        alt={currentImage.alt || "Product image"}
-        className="w-full max-h-96 object-cover"
-      />
-      {images.length > 1 && (
-        <>
-          <button
-            onClick={handlePrev}
-            className="absolute top-1/2 left-2 -translate-y-1/2 bg-white p-2 rounded-full shadow text-gray-600 hover:text-black"
-          >
-            <FaChevronLeft />
-          </button>
-          <button
-            onClick={handleNext}
-            className="absolute top-1/2 right-2 -translate-y-1/2 bg-white p-2 rounded-full shadow text-gray-600 hover:text-black"
-          >
-            <FaChevronRight />
-          </button>
-        </>
-      )}
-      {images.length > 1 && (
-        <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-          {index + 1}/{images.length}
-        </div>
-      )}
     </div>
   );
 }
@@ -94,13 +43,8 @@ export default function SingleProduct() {
     return <p className="text-center text-gray-500 text-lg">No product found.</p>;
   }
 
-  // Samle bilder: Bruker product.images hvis det finnes, ellers product.image
-  let imagesArray = [];
-  if (Array.isArray(product.images) && product.images.length > 0) {
-    imagesArray = product.images;
-  } else if (product.image && product.image.url) {
-    imagesArray = [product.image];
-  }
+  // Siden det bare er ett bilde per produkt, bruker vi produktets enkeltbilde.
+  const productImage = product.image && product.image.url ? product.image : null;
 
   const handleAddToCart = () => {
     addToCart(product);
@@ -131,9 +75,17 @@ export default function SingleProduct() {
       <div className="max-w-screen-xl mx-auto px-4 pb-8">
         {/* Gridoppsett: én kolonne på mobil, to kolonner på tablet og desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Venstre kolonne: Bildeslider */}
+          {/* Venstre kolonne: Produktbilde */}
           <div className="relative">
-            <ImageCarousel images={imagesArray} />
+            {productImage ? (
+              <img
+                src={productImage.url}
+                alt={productImage.alt || "Product image"}
+                className="w-full max-h-96 object-cover"
+              />
+            ) : (
+              <p className="text-center text-gray-500">No image available</p>
+            )}
             <div className="absolute top-4 right-4">
               <div
                 className="bg-white p-2 rounded-full shadow-md cursor-pointer"
@@ -214,7 +166,7 @@ export default function SingleProduct() {
               </p>
             </div>
 
-            {/* Reviews med tydelig toggle og forbedret layout */}
+            {/* Reviews med toggle */}
             {product.reviews && product.reviews.length > 0 && (
               <div className="border-t border-gray-200 pt-4">
                 <div
