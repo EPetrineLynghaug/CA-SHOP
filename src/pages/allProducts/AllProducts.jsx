@@ -7,7 +7,7 @@ export default function AllProducts() {
   const { products, loading, error } = useProducts();
   const [visibleCount, setVisibleCount] = useState(12);
 
-  // Hent spørringsparameteren fra URL-en (f.eks. ?q=søketerm)
+  // Henter spørringsparameteren fra URL-en 
   const location = useLocation();
   const queryParam = new URLSearchParams(location.search).get("q") || "";
 
