@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import ContactUsForm from "../components/forms/ContactUsForm";
 
-
-
 const Contact = () => {
+  const [submitted, setSubmitted] = useState(false);
+
+  // Denne funksjonen kalles når skjemaet er sendt
+  const handleFormSubmit = () => {
+    setSubmitted(true);
+    // Eventuelt kan du også sette en forsinkelse eller navigere til en annen rute
+  };
+
+  // Hvis skjemaet er sendt, vis en takkemelding
+  if (submitted) {
+    return (
+      <div className="bg-gray-100 min-h-screen py-12 flex items-center justify-center">
+        <div className="max-w-2xl mx-auto bg-white p-8 shadow-lg rounded-lg text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Thank You!</h2>
+          <p className="text-gray-700 text-xl">
+            Thank you for your message. We appreciate your feedback and will get back to you as soon as possible.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Hvis skjemaet ikke er sendt, vis kontaktsiden med informasjonstekst og skjema
   return (
     <div className="bg-gray-100 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -22,7 +43,7 @@ const Contact = () => {
             </div>
             {/* Høyre kolonne – Kontaktskjema */}
             <div className="md:w-1/2 p-8">
-              <ContactUsForm hideHeader={true} />
+              <ContactUsForm onSubmit={handleFormSubmit} hideHeader={true} />
             </div>
           </div>
         </div>
