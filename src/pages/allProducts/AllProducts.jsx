@@ -7,11 +7,11 @@ export default function AllProducts() {
   const { products, loading, error } = useProducts();
   const [visibleCount, setVisibleCount] = useState(12);
 
-  // Henter spørringsparameteren fra URL-en 
+  // Get the query parameter from the URL 
   const location = useLocation();
   const queryParam = new URLSearchParams(location.search).get("q") || "";
 
-  // Sorter slik at salgselementene kommer først
+  // Sort so that on-sale products appear first
   const sortedProducts = [...products].sort((a, b) => {
     const aOnSale = a.discountedPrice && a.discountedPrice < a.price;
     const bOnSale = b.discountedPrice && b.discountedPrice < b.price;
@@ -20,7 +20,7 @@ export default function AllProducts() {
     return 0;
   });
 
-  // Filtrer produktene dersom det finnes en spørringsparameter
+  // Filter products if a query parameter is present
   const filteredProducts = queryParam
     ? sortedProducts.filter((product) =>
         product.title.toLowerCase().includes(queryParam.toLowerCase())
@@ -31,8 +31,8 @@ export default function AllProducts() {
 
   return (
     <div className="bg-white mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        {queryParam ? `Results for "${queryParam}"` : "Products"}
+      <h1 className="text-3xl font-bold text-left mb-8">
+        {queryParam ? `Results for "${queryParam}"` : "Explore Our Collection"}
       </h1>
 
       {loading && <p className="text-center text-gray-500">Loading products...</p>}
