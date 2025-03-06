@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 import useProductStore from "../../store/productStore";
-import { useProducts } from "../../hooks/productsApi";
+import { useProducts } from "../../hooks/useProductsApi";
 import CartItems from "../../components/cart/CartItems";
 import OrderSummary from "../../components/cart/OrderSummary";
 import DeliveryForm from "../../components/forms/DeliveryForm";

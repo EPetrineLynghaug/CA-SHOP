@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router";
-import { useProductById } from "../../hooks/productsApi";
+import { useProductById } from "../../hooks/useProductsApi";
 import useProductStore from "../../store/productStore";
 import { 
   FaRegHeart, 
