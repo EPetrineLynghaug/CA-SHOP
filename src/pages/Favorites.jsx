@@ -14,13 +14,8 @@ export default function Favorites() {
       ) : (
         <p>No favorites yet.</p>
       )}
-      <div className="mt-6">
-        <Link to="/cart">
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded-md">
-            Go to Cart
-          </button>
-        </Link>
+     
       </div>
-    </div>
+   
   );
 }
