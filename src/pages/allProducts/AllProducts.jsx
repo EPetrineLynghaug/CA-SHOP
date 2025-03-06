@@ -7,7 +7,7 @@ export default function AllProducts() {
   const { products, loading, error } = useProducts();
   const [visibleCount, setVisibleCount] = useState(12);
 
-  // Hent spørringsparameteren fra URL-en (f.eks. ?q=søketerm)
+  // Henter spørringsparameteren fra URL-en 
   const location = useLocation();
   const queryParam = new URLSearchParams(location.search).get("q") || "";
 
@@ -30,9 +30,10 @@ export default function AllProducts() {
   const visibleProducts = filteredProducts.slice(0, visibleCount);
 
   return (
-    <div className="bg-white mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        {queryParam ? `Results for "${queryParam}"` : "Products"}
+   
+      <div className="bg-white mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold text-left mb-8">
+        {queryParam ? `Results for "${queryParam}"` : "Explore Our Collection"}
       </h1>
 
       {loading && <p className="text-center text-gray-500">Loading products...</p>}

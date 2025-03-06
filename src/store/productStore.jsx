@@ -1,17 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+const EXPIRY_TIME = 1000 * 60 * 60 * 24; // 24 timer
+
 const useProductStore = create(
   persist(
     (set, get) => ({
-      // Products fetched from API
+      // Produkter hentet fra API
       products: [],
-      // Favourites: stores entire product objects
+      // Favourites: lagrer hele produktobjekter
       favourites: [],
-      // Cart: stores products with an associated quantity
+      // Cart: lagrer produkter med tilhørende antall
       cart: [],
+      // Tidspunkt for når state ble lagret
+      savedAt: new Date().getTime(),
 
-      // Set products (e.g., after an API call)
+      // Setter produkter (f.eks. etter et API-kall)
       setProducts: (products) => set({ products }),
 
       // Favourites
@@ -25,21 +29,14 @@ const useProductStore = create(
         set((state) => ({
           favourites: state.favourites.filter((p) => p.id !== productId),
         })),
-      // Clear all favourites
       clearFavourites: () => set({ favourites: [] }),
 
-      // Cart functionality
+      // Cart-funksjonalitet – merk at produktet fjernes ikke fra favorites
       addToCart: (product) =>
         set((state) => {
-          // Remove product from favourites if it exists there
-          const updatedFavourites = state.favourites.filter(
-            (p) => p.id !== product.id
-          );
-          // Check if product is already in the cart
           const existingItem = state.cart.find((item) => item.id === product.id);
           if (existingItem) {
             return {
-              favourites: updatedFavourites,
               cart: state.cart.map((item) =>
                 item.id === product.id
                   ? { ...item, quantity: item.quantity + 1 }
@@ -48,14 +45,13 @@ const useProductStore = create(
             };
           } else {
             return {
-              favourites: updatedFavourites,
               cart: [
                 ...state.cart,
                 {
                   ...product,
                   quantity: 1,
-                 
-                  imageUrl: product.imageUrl || product.image || "https://via.placeholder.com/150",
+                  imageUrl:
+                    product.imageUrl || product.image || "https://via.placeholder.com/150",
                 },
               ],
             };
@@ -73,7 +69,7 @@ const useProductStore = create(
         })),
       clearCart: () => set({ cart: [] }),
 
-      // Function to calculate total price of the cart
+      // Kalkuler totalpris for handlekurven
       getCartTotal: () => {
         const cart = get().cart;
         return cart.reduce(
@@ -83,7 +79,28 @@ const useProductStore = create(
       },
     }),
     {
-      name: "product-store", 
+      name: "product-store",
+      // Migrasjonsfunksjon: Dersom lagret state er eldre enn EXPIRY_TIME, nullstilles state
+      migrate: (persistedState, version) => {
+        if (persistedState && persistedState.savedAt) {
+          const currentTime = new Date().getTime();
+          if (currentTime - persistedState.savedAt > EXPIRY_TIME) {
+            return {
+              products: [],
+              favourites: [],
+              cart: [],
+              savedAt: new Date().getTime(),
+            };
+          }
+        }
+        return persistedState;
+      },
+      // Ved rehydrering fornyes savedAt for å forlenge gyldighetstiden
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.savedAt = new Date().getTime();
+        }
+      },
     }
   )
 );

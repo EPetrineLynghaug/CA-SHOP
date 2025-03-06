@@ -1,58 +1,76 @@
 import { useState, useRef } from "react";
 
-function useForm(initialValues) {
+export default function useForm(initialValues) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
+  // Beholder initialverdiene slik at resetForm alltid bruker de opprinnelige verdiene.
   const initialValuesRef = useRef(initialValues);
 
+  // Utvidet valideringslogikk
   const validateField = (name, value) => {
-    if (!value.trim()) return `${name} is required`;
-
+    let error = "";
+    if (!value.trim()) {
+      return `${name} is required`;
+    }
     switch (name) {
       case "email": {
-        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-        if (!emailRegex.test(value)) return "Invalid email address";
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(value)) {
+          error = "Invalid email address";
+        }
         break;
       }
       case "name": {
-        const letterRegex = /[A-Za-zæøåÆØÅ]/;
-        if (!letterRegex.test(value))
-          return "Name must contain at least one letter";
+        // Fjern alle tegn som ikke er bokstaver og sjekk om lengden er minst 2
+        const letterCount = value.replace(/[^A-Za-zæøåÆØÅ]/g, "").length;
+        if (letterCount < 2) {
+          error = "Name must contain at least two letters";
+        }
         break;
       }
       case "fullName": {
-        // Krever minst to ord med bokstaver (fornavn og etternavn)
+        // Krever minst to ord med bokstaver (f.eks. fornavn og etternavn)
         const fullNameRegex = /^[A-Za-zæøåÆØÅ]+(?:\s+[A-Za-zæøåÆØÅ]+)+$/;
-        if (!fullNameRegex.test(value))
-          return "Full Name must include at least first and last name (letters only)";
+        if (!fullNameRegex.test(value)) {
+          error =
+            "Full Name must include at least first and last name (letters only)";
+        }
         break;
       }
       case "address": {
-        if (value.trim().length < 5) return "Address seems too short";
+        if (value.trim().length < 5) {
+          error = "Address seems too short";
+        }
         break;
       }
       case "zipCode": {
         const zipRegex = /^\d{3,10}$/;
-        if (!zipRegex.test(value)) return "Invalid ZIP Code";
+        if (!zipRegex.test(value)) {
+          error = "Invalid ZIP Code";
+        }
         break;
       }
       case "city": {
         const cityRegex = /^[A-Za-zæøåÆØÅ\s]+$/;
-        if (!cityRegex.test(value))
-          return "City must contain only letters and spaces";
+        if (!cityRegex.test(value)) {
+          error = "City must contain only letters and spaces";
+        }
         break;
       }
       case "phoneNumber": {
         const phoneRegex = /^[0-9+\s\-()]+$/;
-        if (!phoneRegex.test(value)) return "Invalid phone number";
+        if (!phoneRegex.test(value)) {
+          error = "Invalid phone number";
+        }
         break;
       }
       default:
         break;
     }
-    return "";
+    return error;
   };
 
+  // Håndterer endringer på inputfeltene
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -60,6 +78,7 @@ function useForm(initialValues) {
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
+  // Håndterer innsending av skjemaet og kjører callback hvis alt er validert
   const handleSubmit = (e, callback) => {
     e.preventDefault();
     const validationErrors = {};
@@ -73,6 +92,7 @@ function useForm(initialValues) {
     }
   };
 
+  // Tilbakestiller skjemaet til initialverdiene
   const resetForm = () => {
     setValues(initialValuesRef.current);
     setErrors({});
@@ -80,5 +100,3 @@ function useForm(initialValues) {
 
   return { values, errors, handleChange, handleSubmit, resetForm };
 }
-
-export default useForm;

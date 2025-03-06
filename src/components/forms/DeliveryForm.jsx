@@ -13,10 +13,20 @@ export default function DeliveryForm({ onSubmit }) {
 
   const { values, errors, handleChange, handleSubmit } = useForm(initialDeliveryValues);
 
+  // Wrapper-funksjon for å logge verdiene før vi kaller den eksterne onSubmit
+  const handleDeliverySubmit = (e) => {
+    handleSubmit(e, () => {
+      console.log("Delivery form submitted with values:", values);
+      if (onSubmit) {
+        onSubmit(values);
+      }
+    });
+  };
+
   return (
     <div className="bg-white shadow rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4">Enter Delivery Information</h2>
-      <form className="space-y-4" onSubmit={(e) => handleSubmit(e, onSubmit)}>
+      <form className="space-y-4" onSubmit={handleDeliverySubmit}>
         <div>
           <label className="block mb-1 font-medium text-gray-700">Full Name</label>
           <input

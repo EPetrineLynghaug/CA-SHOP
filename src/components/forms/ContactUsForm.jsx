@@ -10,7 +10,7 @@ export default function ContactUsForm({ hideHeader = false }) {
 
   // Callback som kalles når skjemaet valideres og sendes inn
   const submitForm = () => {
-    console.log("Form submitted with values:", values);
+    console.log("Contact form submitted with values:", values);
     alert("Thank you for contacting us!");
     resetForm();
   };

@@ -6,8 +6,6 @@ import {
   FaRegHeart, 
   FaHeart, 
   FaStar, 
-  FaChevronLeft, 
-  FaChevronRight, 
   FaChevronDown 
 } from "react-icons/fa";
 
@@ -18,60 +16,9 @@ function StarRating({ rating = 0 }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <FaStar
           key={star}
-          className={`w-5 h-5 ${
-            star <= rating ? "text-yellow-500" : "text-gray-300"
-          }`}
+          className={`w-5 h-5 ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
         />
       ))}
-    </div>
-  );
-}
-
-function ImageCarousel({ images = [] }) {
-  const [index, setIndex] = React.useState(0);
-
-  if (!images.length) {
-    return <p className="text-center text-gray-500">No image available</p>;
-  }
-
-  const currentImage = images[index];
-
-  const handlePrev = () => {
-    setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  return (
-    <div className="relative w-full">
-      <img
-        src={currentImage.url}
-        alt={currentImage.alt || "Product image"}
-        className="w-full max-h-96 object-cover"
-      />
-      {images.length > 1 && (
-        <>
-          <button
-            onClick={handlePrev}
-            className="absolute top-1/2 left-2 -translate-y-1/2 bg-white p-2 rounded-full shadow text-gray-600 hover:text-black"
-          >
-            <FaChevronLeft />
-          </button>
-          <button
-            onClick={handleNext}
-            className="absolute top-1/2 right-2 -translate-y-1/2 bg-white p-2 rounded-full shadow text-gray-600 hover:text-black"
-          >
-            <FaChevronRight />
-          </button>
-        </>
-      )}
-      {images.length > 1 && (
-        <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-          {index + 1}/{images.length}
-        </div>
-      )}
     </div>
   );
 }
@@ -81,6 +28,7 @@ export default function SingleProduct() {
   const { product, loading, error } = useProductById(id);
   const { addToCart, favourites, addFavourite, removeFavourite } = useProductStore();
   const [showReviews, setShowReviews] = React.useState(false);
+  const [addedToCart, setAddedToCart] = React.useState(false);
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading product details...</p>;
@@ -94,17 +42,14 @@ export default function SingleProduct() {
     return <p className="text-center text-gray-500 text-lg">No product found.</p>;
   }
 
-  // Samle bilder: Bruker product.images hvis det finnes, ellers product.image
-  let imagesArray = [];
-  if (Array.isArray(product.images) && product.images.length > 0) {
-    imagesArray = product.images;
-  } else if (product.image && product.image.url) {
-    imagesArray = [product.image];
-  }
+  // Bruker produktets enkeltbilde
+  const productImage = product.image && product.image.url ? product.image : null;
 
   const handleAddToCart = () => {
     addToCart(product);
     console.log("Product added to cart:", product);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000); // Endrer tilbake etter 2 sekunder
   };
 
   const isFavorited = favourites.some((fav) => fav.id === product.id);
@@ -120,20 +65,30 @@ export default function SingleProduct() {
     <div className="min-h-screen bg-white">
       {/* Back-knapp */}
       <div className="max-w-screen-xl mx-auto px-4 py-4">
+        
         <button
           onClick={() => window.history.back()}
-          className="text-gray-500 hover:text-gray-700 text-sm"
+          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-md transition-colors duration-200 hover:bg-gray-200 hover:text-gray-800"
         >
-          &larr; Back
+          <span>&larr;</span>
+          <span>Back</span>
         </button>
       </div>
 
       <div className="max-w-screen-xl mx-auto px-4 pb-8">
         {/* Gridoppsett: én kolonne på mobil, to kolonner på tablet og desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Venstre kolonne: Bildeslider */}
+          {/* Venstre kolonne: Produktbilde */}
           <div className="relative">
-            <ImageCarousel images={imagesArray} />
+            {productImage ? (
+              <img
+                src={productImage.url}
+                alt={productImage.alt || "Product image"}
+                className="w-full max-h-96 object-cover"
+              />
+            ) : (
+              <p className="text-center text-gray-500">No image available</p>
+            )}
             <div className="absolute top-4 right-4">
               <div
                 className="bg-white p-2 rounded-full shadow-md cursor-pointer"
@@ -177,12 +132,16 @@ export default function SingleProduct() {
               </p>
             </div>
 
-            {/* Legg i handlekurv-knapp */}
+            {/* Legg i handlekurv-knapp som skifter tekst og farger */}
             <button
               onClick={handleAddToCart}
-              className="bg-black text-white py-3 px-8 rounded-md hover:opacity-90 transition"
+              className={`py-3 px-8 rounded-md transition-colors duration-200 ${
+                addedToCart 
+                  ? "bg-green-600 text-white" 
+                  : "bg-black text-white hover:bg-gray-800"
+              }`}
             >
-              Add to Cart
+              {addedToCart ? "Added to Cart" : "Add to Cart"}
             </button>
 
             {/* Tags */}
@@ -214,7 +173,7 @@ export default function SingleProduct() {
               </p>
             </div>
 
-            {/* Reviews med tydelig toggle og forbedret layout */}
+            {/* Reviews med toggle */}
             {product.reviews && product.reviews.length > 0 && (
               <div className="border-t border-gray-200 pt-4">
                 <div

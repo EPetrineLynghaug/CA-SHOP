@@ -5,69 +5,64 @@ const BASE_URL = "https://v2.api.noroff.dev/online-shop/";
 // Custom hook for å hente alle produkter
 export function useProducts() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let isMounted = true; // brukes for å unngå state-updates etter unmount
+
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const response = await fetch(BASE_URL);
         if (!response.ok) {
-          throw new Error(`Nettverksfeil: ${response.status}`);
+          const errorText = await response.text();
+          throw new Error(
+            errorText || `API request failed med status ${response.status}`
+          );
         }
-        const apidata = await response.json();
-        setProducts(apidata.data);
+        // Hent respons som tekst, og parser dersom den ikke er tom
+        const text = await response.text();
+        const result = text ? JSON.parse(text) : {};
+        if (isMounted) {
+          setProducts(result.data || []);
+        }
       } catch (err) {
-        console.error("Feil ved henting av produkter:", err);
-        setError(err);
+        if (isMounted) {
+          console.error("Feil ved henting av produkter:", err);
+          setError(err);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchProducts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  return { products, loading, error };
+  return { products, error, loading };
 }
 
-// Custom hook for å hente et produkt basert på ID
+// Custom hook for å hente et enkelt produkt basert på ID
+// Gjenbruker listen fra useProducts og filtrerer ut ønsket produkt
 export function useProductById(id) {
+  const { products, error, loading } = useProducts();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
+    if (products.length > 0) {
+      const found = products.find((p) => p.id === id);
+      setProduct(found || null);
     }
+  }, [id, products]);
 
-    const fetchProductById = async () => {
-      console.log(`🔍 Henter produkt med ID:`, id);
-      try {
-        const response = await fetch(`${BASE_URL}${id}`);
-        console.log(`🔍 API responsstatus:`, response.status);
-        if (!response.ok) {
-          throw new Error(
-            `❌ API-feil: ${response.status} ${response.statusText}`
-          );
-        }
-        const apidata = await response.json();
-        console.log(`🔍 API respons JSON:`, apidata);
-        setProduct(apidata.data);
-      } catch (err) {
-        console.error(`❌ Feil ved henting av produkt med ID ${id}:`, err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProductById();
-  }, [id]);
-
-  return { product, loading, error };
+  return { product, error, loading };
 }
 
 export default { useProducts, useProductById };
