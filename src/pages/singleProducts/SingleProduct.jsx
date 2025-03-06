@@ -16,9 +16,7 @@ function StarRating({ rating = 0 }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <FaStar
           key={star}
-          className={`w-5 h-5 ${
-            star <= rating ? "text-yellow-500" : "text-gray-300"
-          }`}
+          className={`w-5 h-5 ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
         />
       ))}
     </div>
@@ -30,6 +28,7 @@ export default function SingleProduct() {
   const { product, loading, error } = useProductById(id);
   const { addToCart, favourites, addFavourite, removeFavourite } = useProductStore();
   const [showReviews, setShowReviews] = React.useState(false);
+  const [addedToCart, setAddedToCart] = React.useState(false);
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading product details...</p>;
@@ -43,12 +42,14 @@ export default function SingleProduct() {
     return <p className="text-center text-gray-500 text-lg">No product found.</p>;
   }
 
-  // Siden det bare er ett bilde per produkt, bruker vi produktets enkeltbilde.
+  // Bruker produktets enkeltbilde
   const productImage = product.image && product.image.url ? product.image : null;
 
   const handleAddToCart = () => {
     addToCart(product);
     console.log("Product added to cart:", product);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000); // Endrer tilbake etter 2 sekunder
   };
 
   const isFavorited = favourites.some((fav) => fav.id === product.id);
@@ -62,13 +63,14 @@ export default function SingleProduct() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Back-knapp */}
+      {/* Back-knapp med moderne hover-effekt */}
       <div className="max-w-screen-xl mx-auto px-4 py-4">
         <button
           onClick={() => window.history.back()}
-          className="text-gray-500 hover:text-gray-700 text-sm"
+          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-md transition-colors duration-200 hover:bg-gray-200 hover:text-gray-800"
         >
-          &larr; Back
+          <span>&larr;</span>
+          <span>Back</span>
         </button>
       </div>
 
@@ -129,12 +131,16 @@ export default function SingleProduct() {
               </p>
             </div>
 
-            {/* Legg i handlekurv-knapp */}
+            {/* Legg i handlekurv-knapp som skifter tekst og farger */}
             <button
               onClick={handleAddToCart}
-              className="bg-black text-white py-3 px-8 rounded-md hover:opacity-90 transition"
+              className={`py-3 px-8 rounded-md transition-colors duration-200 ${
+                addedToCart 
+                  ? "bg-green-600 text-white" 
+                  : "bg-black text-white hover:bg-gray-800"
+              }`}
             >
-              Add to Cart
+              {addedToCart ? "Added to Cart" : "Add to Cart"}
             </button>
 
             {/* Tags */}
