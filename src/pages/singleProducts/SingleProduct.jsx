@@ -63,8 +63,9 @@ export default function SingleProduct() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Back-knapp med moderne hover-effekt */}
+      {/* Back-knapp */}
       <div className="max-w-screen-xl mx-auto px-4 py-4">
+        
         <button
           onClick={() => window.history.back()}
           className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-md transition-colors duration-200 hover:bg-gray-200 hover:text-gray-800"
