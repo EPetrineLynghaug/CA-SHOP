@@ -9,11 +9,12 @@ export default function DeliveryForm({ onSubmit }) {
     city: "",
     phoneNumber: "",
     email: "",
+    payment: "", // Nytt felt for betalingsmetode
   };
 
   const { values, errors, handleChange, handleSubmit } = useForm(initialDeliveryValues);
 
-  // Wrapper-funksjon for å logge verdiene før vi kaller den eksterne onSubmit
+  // Wrapper-funksjon for å logge verdiene før vi kaller onSubmit
   const handleDeliverySubmit = (e) => {
     handleSubmit(e, () => {
       console.log("Delivery form submitted with values:", values);
@@ -102,6 +103,22 @@ export default function DeliveryForm({ onSubmit }) {
             required
           />
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+        </div>
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Payment Method</label>
+          <select
+            name="payment"
+            value={values.payment}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            required
+          >
+            <option value="">Select payment method</option>
+            <option value="vipps">Vipps</option>
+            <option value="paypal">PayPal</option>
+            <option value="visa">Visa</option>
+          </select>
+          {errors.payment && <p className="text-red-500 text-sm mt-1">{errors.payment}</p>}
         </div>
         <button
           type="submit"

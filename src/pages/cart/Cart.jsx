@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
-import useProductStore from "../../store/productStore";
 import { useProducts } from "../../hooks/useProductsApi";
+import useProductStore from "../../store/productStore";
 import CartItems from "../../components/cart/CartItems";
 import OrderSummary from "../../components/cart/OrderSummary";
 import DeliveryForm from "../../components/forms/DeliveryForm";
 
-
-
 export default function Cart() {
+  // Henter produktene fra API (via hook) og state fra Zustand-storen
   const { products, loading, error } = useProducts();
   const {
     cart,
@@ -20,51 +19,60 @@ export default function Cart() {
     favourites,
   } = useProductStore();
 
-  const [showReceipt, setShowReceipt] = useState(false);
+  // Lokalt state for bestillingsbekreftelse
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [orderTotal, setOrderTotal] = useState(null);
 
+  // Kalkulerer prisdetaljene
   const subTotal = getCartTotal();
   const vatRate = 0.25;
   const vatAmount = subTotal * vatRate;
   const totalWithVAT = subTotal + vatAmount;
 
-  const onDeliverySubmit = () => {
+  // Når leveringsinformasjonen sendes inn: lagre totalpris, tømm handlekurven og vis bekreftelse
+  const onDeliverySubmit = (deliveryValues) => {
+    console.log("Delivery info received:", deliveryValues);
     setOrderTotal(totalWithVAT);
     clearCart();
-    setShowReceipt(true);
+    setOrderConfirmed(true);
   };
 
+  // Filtrerer favoritter direkte (uten useMemo)
   const additionalFavorites = favourites.filter(
     (fav) => !cart.some((item) => item.id === fav.id)
   );
 
-  if (loading) {
-    return <p className="text-center py-8">Loading products...</p>;
-  }
-  if (error) {
+  if (loading) return <p className="text-center py-8">Loading products...</p>;
+  if (error)
     return (
       <p className="text-center py-8 text-red-500">
         Error: {error.message}
       </p>
     );
-  }
-  if (showReceipt) {
+
+  // Bestillingsbekreftelse: vis totalpris og en knapp for å fortsette shopping
+  if (orderConfirmed) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8 text-center">
+      <div className="min-h-screen flex flex-col justify-center items-center px-4 py-8">
         <h1 className="text-3xl font-bold mb-4">Order Confirmed</h1>
         <p className="mb-4 text-lg">Thank you for your purchase!</p>
-        <p className="mb-8 text-lg">
-          Your order total was <span className="font-semibold">${orderTotal.toFixed(2)}</span>.
-        </p>
-        <Link to="/">
-          <button className="px-6 py-3 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 transition">
-            Continue Shopping
-          </button>
+        {orderTotal !== null && (
+          <p className="mb-8 text-lg">
+            Your order total was{" "}
+            <span className="font-semibold">${orderTotal.toFixed(2)}</span>.
+          </p>
+        )}
+        <Link
+          to="/"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 transition"
+        >
+          Continue Shopping
         </Link>
       </div>
     );
   }
 
+  // Hovedvisning: cart med ordreoversikt og leveringsskjema
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <Link to="/" className="text-sm text-gray-500 inline-flex items-center mb-6">
@@ -82,7 +90,11 @@ export default function Cart() {
             />
           </div>
           <div className="md:w-1/3 space-y-6">
-            <OrderSummary subTotal={subTotal} vatAmount={vatAmount} totalWithVAT={totalWithVAT} />
+            <OrderSummary
+              subTotal={subTotal}
+              vatAmount={vatAmount}
+              totalWithVAT={totalWithVAT}
+            />
             <DeliveryForm onSubmit={onDeliverySubmit} />
           </div>
         </div>
@@ -91,19 +103,15 @@ export default function Cart() {
       )}
       {additionalFavorites.length > 0 && (
         <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 text-center">Add more of your favorites</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">
+            Add more of your favorites
+          </h2>
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
             {additionalFavorites.map((fav) => {
-              let favImageSrc = "https://via.placeholder.com/100";
-              if (fav.image && fav.image.url) {
-                favImageSrc = fav.image.url;
-              } else if (
-                Array.isArray(fav.images) &&
-                fav.images.length > 0 &&
-                fav.images[0].url
-              ) {
-                favImageSrc = fav.images[0].url;
-              }
+              const favImageSrc =
+                fav.image?.url ||
+                (Array.isArray(fav.images) && fav.images.length > 0 && fav.images[0].url) ||
+                "https://via.placeholder.com/100";
               return (
                 <li
                   key={fav.id}
@@ -131,5 +139,3 @@ export default function Cart() {
     </div>
   );
 }
-
-

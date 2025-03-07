@@ -1,7 +1,5 @@
 import React from "react";
 
-
-
 export default function CartItems({ cart, products, updateCartQuantity, removeFromCart }) {
   return (
     <div className="bg-white shadow rounded-lg p-6">
@@ -9,7 +7,8 @@ export default function CartItems({ cart, products, updateCartQuantity, removeFr
       <ul className="divide-y divide-gray-200">
         {cart.map((item) => {
           const prod = products.find((p) => p.id === item.id);
-          const imageSrc = prod?.image?.url || prod?.images?.[0]?.url || "https://via.placeholder.com/50";
+          const imageSrc =
+            prod?.image?.url || prod?.images?.[0]?.url || "https://via.placeholder.com/50";
           const title = prod ? prod.title : item.title;
           const price = prod ? prod.price : item.price;
           return (
@@ -32,13 +31,7 @@ export default function CartItems({ cart, products, updateCartQuantity, removeFr
                   >
                     –
                   </button>
-                  <input
-                    type="number"
-                    min="1"
-                    value={item.quantity}
-                    onChange={(e) => updateCartQuantity(item.id, Number(e.target.value))}
-                    className="w-12 text-center border-l border-r outline-none"
-                  />
+                  <span className="px-3 py-1">{item.quantity}</span>
                   <button
                     type="button"
                     onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
@@ -61,4 +54,3 @@ export default function CartItems({ cart, products, updateCartQuantity, removeFr
     </div>
   );
 }
-

@@ -5,7 +5,7 @@ import SingleProduct from "./pages/singleProducts/SingleProduct";
 import Layout from "./components/Layout";
 import Contact from './pages/Contact';
 import Favorites from "./pages/Favorites";
-import Checkout from "./pages/cart/Checkout";
+
 import Cart from "./pages/cart/Cart";
 
 const App = () => {
@@ -19,7 +19,7 @@ const App = () => {
         <Route path="/products/:id" element={<SingleProduct />} /> {/* ✅ Dynamisk rute */}
         <Route path="favorites" element={<Favorites />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="checkout" element={<Checkout />} />
+       
         </Route>
       </Routes>
     </Router>
