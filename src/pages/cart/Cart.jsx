@@ -5,6 +5,7 @@ import useProductStore from "../../store/productStore";
 import CartItems from "../../components/cart/CartItems";
 import OrderSummary from "../../components/cart/OrderSummary";
 import DeliveryForm from "../../components/forms/DeliveryForm";
+import Spinner from "../../components/Spinner"; 
 
 export default function Cart() {
   // Henter produktene fra API (via hook) og state fra Zustand-storen
@@ -42,7 +43,7 @@ export default function Cart() {
     (fav) => !cart.some((item) => item.id === fav.id)
   );
 
-  if (loading) return <p className="text-center py-8">Loading products...</p>;
+  if (loading) return <Spinner />;
   if (error)
     return (
       <p className="text-center py-8 text-red-500">

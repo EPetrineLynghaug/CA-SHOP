@@ -2,14 +2,10 @@ import React from "react";
 import { useParams } from "react-router";
 import { useProductById } from "../../hooks/useProductsApi";
 import useProductStore from "../../store/productStore";
-import { 
-  FaRegHeart, 
-  FaHeart, 
-  FaStar, 
-  FaChevronDown 
-} from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaStar, FaChevronDown } from "react-icons/fa";
+import Spinner from "../../components/Spinner"; // Importer spinneren
 
-// Statisk stjernerating: viser 5 stjerner basert på "rating"-prop, ingen interaksjon
+// Statisk stjernerating
 function StarRating({ rating = 0 }) {
   return (
     <div className="flex space-x-1">
@@ -31,7 +27,7 @@ export default function SingleProduct() {
   const [addedToCart, setAddedToCart] = React.useState(false);
 
   if (loading) {
-    return <p className="text-center text-gray-500 text-lg">Loading product details...</p>;
+    return <Spinner />;
   }
 
   if (error) {
@@ -49,7 +45,7 @@ export default function SingleProduct() {
     addToCart(product);
     console.log("Product added to cart:", product);
     setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000); // Endrer tilbake etter 2 sekunder
+    setTimeout(() => setAddedToCart(false), 2000);
   };
 
   const isFavorited = favourites.some((fav) => fav.id === product.id);
@@ -65,7 +61,6 @@ export default function SingleProduct() {
     <div className="min-h-screen bg-white">
       {/* Back-knapp */}
       <div className="max-w-screen-xl mx-auto px-4 py-4">
-        
         <button
           onClick={() => window.history.back()}
           className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-md transition-colors duration-200 hover:bg-gray-200 hover:text-gray-800"
@@ -76,7 +71,6 @@ export default function SingleProduct() {
       </div>
 
       <div className="max-w-screen-xl mx-auto px-4 pb-8">
-        {/* Gridoppsett: én kolonne på mobil, to kolonner på tablet og desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Venstre kolonne: Produktbilde */}
           <div className="relative">
@@ -132,7 +126,7 @@ export default function SingleProduct() {
               </p>
             </div>
 
-            {/* Legg i handlekurv-knapp som skifter tekst og farger */}
+            {/* Legg i handlekurv-knapp */}
             <button
               onClick={handleAddToCart}
               className={`py-3 px-8 rounded-md transition-colors duration-200 ${
