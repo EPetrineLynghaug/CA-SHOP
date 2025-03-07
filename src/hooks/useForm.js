@@ -3,10 +3,9 @@ import { useState, useRef } from "react";
 export default function useForm(initialValues) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
-  // Beholder initialverdiene slik at resetForm alltid bruker de opprinnelige verdiene.
+  // Keep initial values for reset
   const initialValuesRef = useRef(initialValues);
 
-  // Utvidet valideringslogikk
   const validateField = (name, value) => {
     let error = "";
     if (!value.trim()) {
@@ -21,7 +20,7 @@ export default function useForm(initialValues) {
         break;
       }
       case "name": {
-        // Fjern alle tegn som ikke er bokstaver og sjekk om lengden er minst 2
+        // Remove non-letter characters and check if at least 2 letters exist
         const letterCount = value.replace(/[^A-Za-zæøåÆØÅ]/g, "").length;
         if (letterCount < 2) {
           error = "Name must contain at least two letters";
@@ -29,7 +28,7 @@ export default function useForm(initialValues) {
         break;
       }
       case "fullName": {
-        // Krever minst to ord med bokstaver (f.eks. fornavn og etternavn)
+        // Require at least two words with letters only (first and last name)
         const fullNameRegex = /^[A-Za-zæøåÆØÅ]+(?:\s+[A-Za-zæøåÆØÅ]+)+$/;
         if (!fullNameRegex.test(value)) {
           error =
@@ -64,13 +63,24 @@ export default function useForm(initialValues) {
         }
         break;
       }
+      case "subject": {
+        if (value.trim().length < 3) {
+          error = "Subject must be at least 3 characters";
+        }
+        break;
+      }
+      case "body": {
+        if (value.trim().length < 3) {
+          error = "Message must be at least 3 characters";
+        }
+        break;
+      }
       default:
         break;
     }
     return error;
   };
 
-  // Håndterer endringer på inputfeltene
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -78,7 +88,6 @@ export default function useForm(initialValues) {
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
-  // Håndterer innsending av skjemaet og kjører callback hvis alt er validert
   const handleSubmit = (e, callback) => {
     e.preventDefault();
     const validationErrors = {};
@@ -92,7 +101,6 @@ export default function useForm(initialValues) {
     }
   };
 
-  // Tilbakestiller skjemaet til initialverdiene
   const resetForm = () => {
     setValues(initialValuesRef.current);
     setErrors({});
