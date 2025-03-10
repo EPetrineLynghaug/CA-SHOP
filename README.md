@@ -9,26 +9,27 @@ Currently, two official plugins are available:
 
 
 # Initialize
-
+```bash
 npm install
+```
 
 Run locally
+```bash
 
 npm run dev
+```
 
-# Project structure
+## Project structure
 
 ```
 react-prosjekt/
 ├── package.json              // Project metadata, dependencies, and scripts (using Vite)
 ├── vite.config.js            // Vite configuration (plugins, server settings, etc.)
-├── tailwind.config.js        // Tailwind CSS configuration (custom themes, purge paths, etc.)
-├── .gitignore                // Lists files and directories to ignore (node_modules, dist, environment files, etc.)
-├── index.html                // Main HTML file that includes the root div for bootstrapping the React app
+├── index.html                // Main HTML file that includes the root div for bootstrapping the React 
 └── src/
-    ├── App.jsx               // Root component that wraps your entire application
+    ├── App.jsx               // Root component that wraps the entire application
     ├── index.css             // Global CSS file (includes Tailwind CSS imports)
-    ├── main.jsx              // Entry point that renders the App component and imports global styles
+    ├── main.jsx              // Entry point that renders the App 
     ├── components/           // Contains reusable UI components across the app
     │   ├── cart/
     │   │   ├── CartItems.jsx     // Component to display individual items in the cart
@@ -39,12 +40,12 @@ react-prosjekt/
     │   │   ├── ContactUsForm.jsx // Form component for contacting support or inquiries
     │   │   └── DeliveryForm.jsx  // Form component for capturing delivery information
     │   ├── header/
-    │   │   ├── Header.jsx        // Header component containing the site title/logo and navigation
+    │   │   ├── Header.jsx        // Header/Navbar component containing the site title and navigation
     │   │   └── SearchBar.jsx     // Search bar component for filtering or searching content
     │   ├── product/
     │   │   ├── ProductCard.jsx   // Component for displaying a product card (summary view)
     │   │   └── ProductList.jsx   // Component for rendering a list of products
-    │   ├── Layout.jsx            // Layout component that wraps pages (includes Header, Footer, etc.)
+    │   ├── Layout.jsx            // Layout component that wraps pages.
     │   └── Spinner.jsx           // Reusable loading spinner component for asynchronous tasks
     ├── hooks/                // Contains custom React hooks for shared logic
     │   ├── useForm.js            // Hook to manage form state and validation
@@ -63,3 +64,14 @@ react-prosjekt/
         └── productStore.js     // Zustand store for managing product data and favorites
         
 ```
+
+### Assignment Overview – Javascript Frameworks: Course Assignment
+This project was a one-week assignment that delivered all the required features. The assessment criteria included the following:
+Home Page: Contains a list of products and a lookahead search bar.
+Individual Product Page: Fetches and displays details of a specific item from the API.
+Cart Icon: Shows the current number of items in the shopping cart.
+Checkout Page: Provides a form for completing purchases.
+Checkout Success Page: Confirms successful transactions.
+Contact Page: Features proper validation for user input.
+Shopping Cart: Allows products to be added and managed.
+
