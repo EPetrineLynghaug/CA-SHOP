@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
 import {
   FaBars,
@@ -21,36 +21,45 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-
   const isHomePage = location.pathname === "/";
+
+  // Ref for å lagre den siste navigerte query-strengen
+  const lastNavigatedQueryRef = useRef("");
 
   // Sett initial søkestreng dersom den finnes i URL-en
   useEffect(() => {
     const q = new URLSearchParams(location.search).get("q") || "";
     setSearchQuery(q);
+    lastNavigatedQueryRef.current = q.trim();
   }, [location.search]);
 
-  // Oppdater URL kun på startsiden
+  // Debounce og oppdater URL kun på startsiden
   useEffect(() => {
     if (!isHomePage) return;
-    const currentQuery = new URLSearchParams(location.search).get("q") || "";
-    if (searchQuery.trim() !== currentQuery) {
+
+    // Hvis søket ikke har endret seg i forhold til forrige navigasjon, gjør ingenting
+    if (searchQuery.trim() === lastNavigatedQueryRef.current) return;
+
+    const handler = setTimeout(() => {
       const newUrl = searchQuery.trim()
         ? `/?q=${encodeURIComponent(searchQuery)}`
         : "/";
       navigate(newUrl, { replace: true });
-    }
-  }, [searchQuery, navigate, isHomePage, location.search]);
+      lastNavigatedQueryRef.current = searchQuery.trim();
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery, navigate, isHomePage]);
 
   return (
     <>
       <header className="border-b">
         {/* Øverste stripe */}
         {isHomePage && (
-        <div className="bg-neutral-200 text-center py-2 text-sm">
-          <p>Always free shipping</p>
-        </div>
-          )}
+          <div className="bg-neutral-200 text-center py-2 text-sm">
+            <p>Always free shipping</p>
+          </div>
+        )}
 
         {/* Hoved-navigasjon */}
         <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">

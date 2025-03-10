@@ -52,9 +52,7 @@ export default function AllProducts() {
         </div>
       )}
 
-      {!loading && visibleProducts.length === 0 && (
-        <p className="mt-8 text-center text-gray-500">No products found.</p>
-      )}
+    
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import React from "react";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 import { useProductById } from "../../hooks/useProductsApi";
 import useProductStore from "../../store/productStore";
 import { FaRegHeart, FaHeart, FaStar, FaChevronDown } from "react-icons/fa";
-import Spinner from "../../components/Spinner"; // Importer spinneren
+import Spinner from "../../components/Spinner";
 
 // Statisk stjernerating
 function StarRating({ rating = 0 }) {
@@ -12,7 +12,9 @@ function StarRating({ rating = 0 }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <FaStar
           key={star}
-          className={`w-5 h-5 ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
+          className={`w-5 h-5 ${
+            star <= rating ? "text-yellow-500" : "text-gray-300"
+          }`}
         />
       ))}
     </div>
@@ -59,15 +61,15 @@ export default function SingleProduct() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Back-knapp */}
+    
       <div className="max-w-screen-xl mx-auto px-4 py-4">
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-md transition-colors duration-200 hover:bg-gray-200 hover:text-gray-800"
+        <Link
+          to="/"
+          className="flex items-center gap-2 px-3 py-2 text-sm border-gray-300 rounded-md transition-colors duration-200  hover:text-gray-900"
         >
           <span>&larr;</span>
           <span>Back</span>
-        </button>
+        </Link>
       </div>
 
       <div className="max-w-screen-xl mx-auto px-4 pb-8">
