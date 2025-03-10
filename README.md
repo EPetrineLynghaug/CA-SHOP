@@ -1,6 +1,6 @@
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" width="60" style="margin-right: 1rem;" />
-  <img src="https://vitejs.dev/logo.svg" alt="Vite" width="60" style="margin-right: 1rem;" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" width="40" style="margin-right: 1rem;" />
+  <img src="https://vitejs.dev/logo.svg" alt="Vite" width="40" style="margin-right: 1rem;" />
   <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" width="40" />
 </p>
 
@@ -15,6 +15,10 @@ Run locally
 ```bash
 
 npm run dev
+```
+Build
+```bash 
+npm run build
 ```
 
 ## Project structure
