@@ -45,7 +45,7 @@ export default function AllProducts() {
         <div className="mt-8 flex justify-center">
           <button
             onClick={() => setVisibleCount(visibleCount + 12)}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 transition"
+            className="px-6 py-3 rounded-md shadow bg-black text-white hover:bg-gray-800"
           >
             Load More
           </button>
